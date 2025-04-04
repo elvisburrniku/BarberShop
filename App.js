@@ -7,7 +7,8 @@ import { AppProvider } from './src/context/AppContext';
 import AppNavigator from './src/navigation/AppNavigator';
 import ErrorBoundary from './src/components/ErrorBoundary';
 import theme from './src/theme/theme';
-import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, Text, ActivityIndicator, StyleSheet, AppRegistry } from 'react-native';
+import { registerRootComponent } from 'expo';
 
 export default function App() {
   const [isReady, setIsReady] = useState(false);
@@ -60,3 +61,5 @@ const styles = StyleSheet.create({
     color: '#2c3e50',
   },
 });
+
+// The component registration is handled in index.js
