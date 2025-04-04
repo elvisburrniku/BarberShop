@@ -26,8 +26,8 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./src/assets/images/logo.png",
-        "backgroundColor": "#FFFFFF"
+        "foregroundImage": "./generated-icon.png",
+        "backgroundColor": "#2c3e50"
       },
       "package": "com.barberx.app",
       "permissions": ["ACCESS_COARSE_LOCATION", "ACCESS_FINE_LOCATION"]
