@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
-import { ScrollView, View, StyleSheet, Image } from 'react-native';
-import { Title, Text, Card, Button, useTheme, ActivityIndicator } from 'react-native-paper';
+import React, { useEffect, useState } from 'react';
+import { ScrollView, View, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { Title, Text, Card, Button, useTheme, ActivityIndicator, Snackbar } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppContext } from '../context/AppContext';
 import BarberCard from '../components/BarberCard';
@@ -8,28 +8,50 @@ import AppointmentCard from '../components/AppointmentCard';
 
 const HomeScreen = ({ navigation }) => {
   const theme = useTheme();
+  const [error, setError] = useState(null);
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  
   const { 
     user, 
     barberShops, 
     appointments, 
-    loading, 
+    loading,
+    locationError,
     findNearbyBarberShops 
   } = useAppContext();
 
   // Get nearby shops when the screen loads
   useEffect(() => {
-    findNearbyBarberShops();
-  }, []);
+    try {
+      findNearbyBarberShops();
+      
+      // Show location error message if there was a problem
+      if (locationError) {
+        setError("Location services unavailable. Showing all barbers instead.");
+        setSnackbarVisible(true);
+      }
+    } catch (err) {
+      console.log('Error loading home data:', err);
+      setError("There was a problem loading data. Please try again.");
+      setSnackbarVisible(true);
+    }
+  }, [locationError]);
 
-  // Filter to get upcoming appointments
-  const upcomingAppointments = appointments.filter(
-    app => app.status === 'upcoming'
-  ).slice(0, 2);  // Only show max 2 on home screen
+  // Safe access to filter appointments (handle potential null values)
+  const upcomingAppointments = appointments ? 
+    appointments
+      .filter(app => app && app.status === 'upcoming')
+      .slice(0, 2) 
+    : [];
 
-  // Get top rated barber shops
-  const topRatedBarbers = [...barberShops]
-    .sort((a, b) => b.rating - a.rating)
-    .slice(0, 3);  // Top 3
+  // Safely get top rated barber shops
+  const topRatedBarbers = barberShops ? 
+    [...barberShops]
+      .sort((a, b) => (b.rating || 0) - (a.rating || 0))
+      .slice(0, 3)
+    : [];
+  
+  const dismissSnackbar = () => setSnackbarVisible(false);
 
   if (loading) {
     return (
@@ -116,6 +138,19 @@ const HomeScreen = ({ navigation }) => {
           </Card>
         </View>
       </ScrollView>
+      
+      {/* Error message Snackbar */}
+      <Snackbar
+        visible={snackbarVisible}
+        onDismiss={dismissSnackbar}
+        duration={4000}
+        action={{
+          label: 'OK',
+          onPress: dismissSnackbar,
+        }}
+      >
+        {error}
+      </Snackbar>
     </SafeAreaView>
   );
 };

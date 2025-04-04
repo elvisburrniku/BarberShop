@@ -1,3 +1,5 @@
+import * as Location from 'expo-location';
+
 // In a real app, this would use the Google Maps API or similar
 // For this MVP, we'll use mock data
 
@@ -83,16 +85,75 @@ export const getBarbersByLocation = async (location, radius = 5) => {
 };
 
 /**
+ * Request location permissions
+ * @returns {Promise<boolean>} - Whether permission was granted
+ */
+export const requestLocationPermission = async () => {
+  try {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    return status === 'granted';
+  } catch (error) {
+    console.log('Error requesting location permission:', error);
+    return false;
+  }
+};
+
+/**
+ * Check if location services are enabled
+ * @returns {Promise<boolean>} - Whether location services are enabled
+ */
+export const areLocationServicesEnabled = async () => {
+  try {
+    const isEnabled = await Location.hasServicesEnabledAsync();
+    return isEnabled;
+  } catch (error) {
+    console.log('Error checking location services:', error);
+    return false;
+  }
+};
+
+/**
  * Get the current user's location
- * @returns {Promise<Object>} - Object with lat and lng
+ * @returns {Promise<Object|null>} - Object with lat and lng or null if unavailable
  */
 export const getCurrentLocation = async () => {
-  // This would use the device's GPS in a real app
-  // For this MVP, we'll return a default location (NYC)
-  return {
-    lat: 40.7128,
-    lng: -74.0060
-  };
+  try {
+    // First check if user has granted permission
+    const hasPermission = await requestLocationPermission();
+    
+    if (!hasPermission) {
+      console.log('Location permission not granted');
+      throw new Error('Location permission not granted');
+    }
+    
+    // Check if location services are enabled
+    const servicesEnabled = await areLocationServicesEnabled();
+    if (!servicesEnabled) {
+      console.log('Location services are disabled');
+      throw new Error('Location services are disabled');
+    }
+    
+    // Get current position with high accuracy
+    const location = await Location.getCurrentPositionAsync({
+      accuracy: Location.Accuracy.High,
+      timeInterval: 5000,
+      mayShowUserSettingsDialog: true
+    });
+    
+    return {
+      lat: location.coords.latitude,
+      lng: location.coords.longitude
+    };
+  } catch (error) {
+    console.log('Error getting current location:', error);
+    
+    // Return a default location (NYC) if there's an error
+    // In a production app, you'd want to handle this differently
+    return {
+      lat: 40.7128,
+      lng: -74.0060
+    };
+  }
 };
 
 /**

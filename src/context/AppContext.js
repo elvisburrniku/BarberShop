@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import * as Location from 'expo-location';
 import { mockBarberShops, mockServices, mockAppointments, mockUser } from '../utils/MockData';
+import { getCurrentLocation, requestLocationPermission, calculateDistance } from '../utils/LocationService';
 
 const AppContext = createContext();
 
@@ -21,21 +21,52 @@ export const AppProvider = ({ children }) => {
   // Get the user's location when the app starts
   useEffect(() => {
     (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setLocationError('Permission to access location was denied');
-        setLoading(false);
-        return;
-      }
-
       try {
-        const location = await Location.getCurrentPositionAsync({});
-        setUserLocation({
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-        });
+        setLoading(true);
+        // Check if we have permission first
+        const hasPermission = await requestLocationPermission();
+        
+        if (!hasPermission) {
+          console.log('Location permission denied');
+          setLocationError('Permission to access location was denied');
+          // Set a default location but mark error state
+          setUserLocation({
+            latitude: 40.7128,
+            longitude: -74.0060, // New York coordinates as fallback
+          });
+          return;
+        }
+
+        try {
+          // Use our improved getCurrentLocation function
+          const location = await getCurrentLocation();
+          
+          if (location) {
+            console.log('Got location:', location);
+            setUserLocation({
+              lat: location.lat,
+              lng: location.lng,
+            });
+          } else {
+            throw new Error('Failed to get location');
+          }
+        } catch (error) {
+          console.log('Error getting location:', error);
+          setLocationError('Error getting location');
+          // Provide default location to prevent app crashes
+          setUserLocation({
+            lat: 40.7128,
+            lng: -74.0060, // New York coordinates as fallback
+          });
+        }
       } catch (error) {
-        setLocationError('Error getting location');
+        console.log('Error in location effect:', error);
+        setLocationError('Error with location services');
+        // Provide default location to prevent app crashes
+        setUserLocation({
+          lat: 40.7128,
+          lng: -74.0060, // New York coordinates as fallback
+        });
       } finally {
         setLoading(false);
       }
@@ -43,10 +74,56 @@ export const AppProvider = ({ children }) => {
   }, []);
 
   // Find nearby barber shops based on user location
-  const findNearbyBarberShops = () => {
-    // In a real app, we would call an API to get nearby shops
-    // For this MVP, we're just returning all mock shops
-    return barberShops;
+  const findNearbyBarberShops = async () => {
+    try {
+      setLoading(true);
+      
+      // In a real app, we would call an API to get nearby shops
+      // based on the user's location coordinates
+      
+      // Check if we have a user location
+      if (!userLocation && !locationError) {
+        // Try to get location again if we don't have it yet
+        const location = await getCurrentLocation();
+        
+        if (location) {
+          setUserLocation({
+            lat: location.lat,
+            lng: location.lng
+          });
+        } else {
+          setLocationError('Could not determine your location');
+        }
+      }
+      
+      // For this MVP with mock data, we filter by distance from user
+      if (userLocation) {
+        // Calculate distance for each barber shop from user's location
+        const shopsWithDistance = barberShops.map(shop => {
+          const distance = calculateDistance(
+            { lat: userLocation.lat, lng: userLocation.lng },
+            { lat: shop.location.lat, lng: shop.location.lng }
+          );
+          
+          return {
+            ...shop,
+            distance: parseFloat(distance.toFixed(1))
+          };
+        });
+        
+        // Sort by distance
+        const sortedShops = [...shopsWithDistance].sort((a, b) => a.distance - b.distance);
+        setBarberShops(sortedShops);
+      }
+      
+      return barberShops;
+    } catch (error) {
+      console.log('Error finding nearby barber shops:', error);
+      setLocationError('Error finding nearby barber shops');
+      return barberShops;
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Book an appointment
