@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, View, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import { Title, Text, Card, Button, useTheme, ActivityIndicator, Snackbar } from 'react-native-paper';
+import { ScrollView, View, StyleSheet, Image, TouchableOpacity, Animated } from 'react-native';
+import { Title, Text, useTheme, ActivityIndicator, Snackbar } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { MaterialIcons } from '@expo/vector-icons';
 import { useAppContext } from '../context/AppContext';
 import BarberCard from '../components/BarberCard';
 import AppointmentCard from '../components/AppointmentCard';
+import MaterialCard from '../components/MaterialCard';
+import MaterialButton from '../components/MaterialButton';
+import FloatingActionButton from '../components/FloatingActionButton';
+import RippleEffect from '../components/RippleEffect';
 
 const HomeScreen = ({ navigation }) => {
   const theme = useTheme();
@@ -62,20 +67,78 @@ const HomeScreen = ({ navigation }) => {
     );
   }
 
+  // Animation value for header
+  const [scrollY] = useState(new Animated.Value(0));
+  
+  // Header animation styles
+  const headerOpacity = scrollY.interpolate({
+    inputRange: [0, 100],
+    outputRange: [1, 0.8],
+    extrapolate: 'clamp',
+  });
+  
+  const headerElevation = scrollY.interpolate({
+    inputRange: [0, 50],
+    outputRange: [0, 3],
+    extrapolate: 'clamp',
+  });
+
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView>
-        {/* Welcome header */}
-        <View style={styles.header}>
-          <View>
-            <Text style={styles.greeting}>Hello, {user.firstName}</Text>
-            <Title style={styles.titleText}>Find your barber today</Title>
-          </View>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
+      <Animated.View 
+        style={[
+          styles.header, 
+          { 
+            backgroundColor: theme.colors.surface,
+            opacity: headerOpacity,
+            elevation: headerElevation,
+            ...theme.shadows.medium,
+          }
+        ]}
+      >
+        <View>
+          <Text style={[styles.greeting, { color: theme.colors.placeholder }]}>
+            Hello, {user.firstName}
+          </Text>
+          <Title style={[styles.titleText, { color: theme.colors.text }]}>
+            Find your barber today
+          </Title>
         </View>
+        <RippleEffect
+          onPress={() => navigation.navigate('Profile')}
+          borderless
+        >
+          <View style={styles.profileButton}>
+            <MaterialIcons name="account-circle" size={24} color={theme.colors.primary} />
+          </View>
+        </RippleEffect>
+      </Animated.View>
+
+      <ScrollView 
+        showsVerticalScrollIndicator={false}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: false }
+        )}
+        scrollEventThrottle={16}
+      >
+        {/* Space for fixed header */}
+        <View style={{ height: 80 }} />
 
         {/* Upcoming appointments section */}
         <View style={styles.section}>
-          <Title style={styles.sectionTitle}>Upcoming Appointments</Title>
+          <View style={styles.sectionHeader}>
+            <Title style={[styles.sectionTitle, { color: theme.colors.text }]}>
+              Upcoming Appointments
+            </Title>
+            <RippleEffect
+              onPress={() => navigation.navigate('Appointments')}
+              borderless
+            >
+              <Text style={{ color: theme.colors.primary }}>See All</Text>
+            </RippleEffect>
+          </View>
+          
           {upcomingAppointments.length > 0 ? (
             upcomingAppointments.map(appointment => (
               <AppointmentCard 
@@ -86,24 +149,39 @@ const HomeScreen = ({ navigation }) => {
               />
             ))
           ) : (
-            <Card style={styles.emptyCard}>
-              <Card.Content>
-                <Text>No upcoming appointments</Text>
-                <Button 
-                  mode="contained" 
-                  style={styles.button}
+            <MaterialCard 
+              elevation={1} 
+              style={styles.emptyCard}
+            >
+              <View style={styles.emptyCardContent}>
+                <Text style={{ color: theme.colors.placeholder, marginBottom: 16 }}>
+                  No upcoming appointments
+                </Text>
+                <MaterialButton 
+                  label="Book Now"
+                  mode="filled"
+                  iconName="calendar-plus"
                   onPress={() => navigation.navigate('DiscoveryStack')}
-                >
-                  Book Now
-                </Button>
-              </Card.Content>
-            </Card>
+                />
+              </View>
+            </MaterialCard>
           )}
         </View>
 
         {/* Top rated barbers section */}
         <View style={styles.section}>
-          <Title style={styles.sectionTitle}>Top Rated Barbers</Title>
+          <View style={styles.sectionHeader}>
+            <Title style={[styles.sectionTitle, { color: theme.colors.text }]}>
+              Top Rated Barbers
+            </Title>
+            <RippleEffect
+              onPress={() => navigation.navigate('DiscoveryStack')}
+              borderless
+            >
+              <Text style={{ color: theme.colors.primary }}>View All</Text>
+            </RippleEffect>
+          </View>
+          
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             {topRatedBarbers.map(barber => (
               <BarberCard 
@@ -123,21 +201,39 @@ const HomeScreen = ({ navigation }) => {
 
         {/* CTA Section */}
         <View style={styles.ctaSection}>
-          <Card style={styles.ctaCard}>
-            <Card.Content style={styles.ctaContent}>
+          <MaterialCard 
+            elevation={3}
+            style={styles.ctaCard}
+          >
+            <View style={styles.ctaContent}>
               <Title style={styles.ctaTitle}>Need a fresh cut?</Title>
-              <Text style={styles.ctaText}>Discover barbers nearby and book your appointment today!</Text>
-              <Button 
-                mode="contained" 
-                style={styles.ctaButton}
+              <Text style={styles.ctaText}>
+                Discover barbers nearby and book your appointment today!
+              </Text>
+              <MaterialButton 
+                label="Find Barbers Near Me"
+                mode="filled"
+                iconName="place"
                 onPress={() => navigation.navigate('DiscoveryStack')}
-              >
-                Find Barbers Near Me
-              </Button>
-            </Card.Content>
-          </Card>
+                color={theme.colors.secondary}
+              />
+            </View>
+          </MaterialCard>
         </View>
+        
+        {/* Extra space at bottom for FAB */}
+        <View style={{ height: 80 }} />
       </ScrollView>
+      
+      {/* Floating Action Button */}
+      <View style={styles.fabContainer}>
+        <FloatingActionButton
+          iconName="add"
+          onPress={() => navigation.navigate('DiscoveryStack')}
+          extended={true}
+          label="Book Now"
+        />
+      </View>
       
       {/* Error message Snackbar */}
       <Snackbar
@@ -148,6 +244,7 @@ const HomeScreen = ({ navigation }) => {
           label: 'OK',
           onPress: dismissSnackbar,
         }}
+        style={{ backgroundColor: theme.colors.error }}
       >
         {error}
       </Snackbar>
@@ -158,68 +255,99 @@ const HomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    position: 'relative',
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
+  // Animated fixed header
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#fff',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 10,
+    height: 80,
   },
   greeting: {
     fontSize: 16,
-    opacity: 0.7,
   },
   titleText: {
     fontSize: 24,
     fontWeight: 'bold',
     marginTop: 4,
   },
+  profileButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  // Content sections
   section: {
-    padding: 20,
+    padding: 16,
+    marginBottom: 8,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
   },
   sectionTitle: {
     fontSize: 20,
-    marginBottom: 15,
+    fontWeight: 'bold',
   },
   horizontalBarberCard: {
     width: 250,
     marginRight: 15,
   },
+  // Empty state card
   emptyCard: {
-    padding: 10,
+    padding: 16,
     marginBottom: 15,
+  },
+  emptyCardContent: {
     alignItems: 'center',
+    justifyContent: 'center',
+    padding: 16,
   },
-  button: {
-    marginTop: 15,
-  },
+  // Call to action section
   ctaSection: {
-    padding: 20,
+    padding: 16,
     marginBottom: 20,
   },
   ctaCard: {
-    backgroundColor: '#2c3e50',
+    padding: 0,
   },
   ctaContent: {
-    padding: 10,
+    padding: 24,
   },
   ctaTitle: {
-    color: '#fff',
+    fontSize: 22,
     fontWeight: 'bold',
+    marginBottom: 8,
+    color: '#fff',
   },
   ctaText: {
     color: '#fff',
-    marginBottom: 15,
+    marginBottom: 20,
+    fontSize: 16,
+    opacity: 0.9,
   },
-  ctaButton: {
-    marginTop: 10,
+  // Floating action button
+  fabContainer: {
+    position: 'absolute',
+    bottom: 16,
+    right: 16,
+    zIndex: 999,
   },
 });
 

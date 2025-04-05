@@ -3,11 +3,12 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { NavigationContainer } from '@react-navigation/native';
+import { View, Text, ActivityIndicator, StyleSheet, Animated } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 import { AppProvider } from './src/context/AppContext';
 import AppNavigator from './src/navigation/AppNavigator';
 import ErrorBoundary from './src/components/ErrorBoundary';
 import theme from './src/theme/theme';
-import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
 // Import URL polyfill to fix "URL.protocol is not implemented" error
 import './src/utils/URLPolyfill';
 
@@ -24,11 +25,51 @@ export default function App() {
     return () => clearTimeout(timer);
   }, []);
 
+  // Loading animation 
+  const [fadeAnim] = useState(new Animated.Value(0));
+  const [scaleAnim] = useState(new Animated.Value(0.9));
+  
+  useEffect(() => {
+    if (!isReady) {
+      Animated.parallel([
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 800,
+          useNativeDriver: true,
+        }),
+        Animated.spring(scaleAnim, {
+          toValue: 1,
+          tension: 20,
+          friction: 7,
+          useNativeDriver: true,
+        })
+      ]).start();
+    }
+  }, []);
+  
   if (!isReady) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#e74c3c" />
-        <Text style={styles.loadingText}>Loading BarberX...</Text>
+      <View style={[styles.loadingContainer, { backgroundColor: theme.colors.background }]}>
+        <Animated.View 
+          style={[
+            styles.logoContainer,
+            {
+              opacity: fadeAnim,
+              transform: [{ scale: scaleAnim }],
+            }
+          ]}
+        >
+          <MaterialIcons name="content-cut" size={60} color={theme.colors.primary} />
+          <Text style={[styles.appTitle, { color: theme.colors.primary }]}>BarberX</Text>
+        </Animated.View>
+        <ActivityIndicator 
+          size="large" 
+          color={theme.colors.primary} 
+          style={{ marginTop: 40 }} 
+        />
+        <Text style={[styles.loadingText, { color: theme.colors.text }]}>
+          Loading amazing haircuts...
+        </Text>
       </View>
     );
   }
@@ -39,8 +80,8 @@ export default function App() {
         <PaperProvider theme={theme}>
           <AppProvider>
             <NavigationContainer>
+              <StatusBar style="dark" backgroundColor={theme.colors.background} />
               <AppNavigator />
-              <StatusBar style="auto" />
             </NavigationContainer>
           </AppProvider>
         </PaperProvider>
@@ -54,12 +95,21 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#ffffff',
+  },
+  logoContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  appTitle: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    marginTop: 12,
+    letterSpacing: 1,
   },
   loadingText: {
     marginTop: 20,
     fontSize: 16,
-    color: '#2c3e50',
+    opacity: 0.7,
   },
 });
 
