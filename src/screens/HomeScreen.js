@@ -15,6 +15,8 @@ const HomeScreen = ({ navigation }) => {
   const theme = useTheme();
   const [error, setError] = useState(null);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
+  // Animation values
+  const [scrollY] = useState(new Animated.Value(0));
   
   const { 
     user, 
@@ -57,18 +59,6 @@ const HomeScreen = ({ navigation }) => {
     : [];
   
   const dismissSnackbar = () => setSnackbarVisible(false);
-
-  if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={theme.colors.primary} />
-        <Text style={{ marginTop: 10 }}>Loading...</Text>
-      </View>
-    );
-  }
-
-  // Animation value for header
-  const [scrollY] = useState(new Animated.Value(0));
   
   // Header animation styles
   const headerOpacity = scrollY.interpolate({
@@ -82,6 +72,15 @@ const HomeScreen = ({ navigation }) => {
     outputRange: [0, 3],
     extrapolate: 'clamp',
   });
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={theme.colors.primary} />
+        <Text style={{ marginTop: 10 }}>Loading...</Text>
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>

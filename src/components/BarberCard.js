@@ -10,8 +10,6 @@ const BarberCard = ({ barber, onPress, style }) => {
   const theme = useTheme();
   const [scaleAnim] = useState(new Animated.Value(1));
   
-  if (!barber) return null;
-  
   // Handle elevation animation on press
   const handlePressIn = () => {
     Animated.spring(scaleAnim, {
@@ -28,6 +26,8 @@ const BarberCard = ({ barber, onPress, style }) => {
       useNativeDriver: true,
     }).start();
   };
+  
+  if (!barber) return null;
 
   return (
     <Animated.View

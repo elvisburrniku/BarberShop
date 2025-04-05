@@ -1,0 +1,172 @@
+ (NOBRIDGE) LOG  Error caught by boundary: [Error: Rendered more hooks than during the previous render.] {"componentStack": "
+    in HomeScreen (created by SceneView)
+    in StaticContainer
+    in EnsureSingleNavigator (created by SceneView)
+    in SceneView (created by BottomTabNavigator)
+    in RCTView (created by View)
+    in View (created by Screen)
+    in RCTView (created by View)
+    in View (created by Animated(View))
+    in Animated(View) (created by Background)
+    in Background (created by Screen)
+    in Screen (created by BottomTabView)
+    in RNSScreen (created by Animated(Anonymous))
+    in Animated(Anonymous)
+    in Suspender (created by Freeze)
+    in Suspense (created by Freeze)
+    in Freeze (created by DelayedFreeze)
+    in DelayedFreeze
+    in InnerScreen (created by Screen)
+    in Screen (created by MaybeScreen)
+    in MaybeScreen (created by BottomTabView)
+    in RNSScreenNavigationContainer (created by ScreenContainer)
+    in ScreenContainer (created by MaybeScreenContainer)
+    in MaybeScreenContainer (created by BottomTabView)
+    in RCTView (created by View)
+    in View (created by SafeAreaProviderCompat)
+    in SafeAreaProviderCompat (created by BottomTabView)
+    in BottomTabView (created by BottomTabNavigator)
+    in PreventRemoveProvider (created by NavigationContent)
+    in NavigationContent
+    in Unknown (created by BottomTabNavigator)
+    in BottomTabNavigator (created by AppNavigator)
+    in AppNavigator (created by App)
+    in ThemeProvider
+    in EnsureSingleNavigator
+    in BaseNavigationContainer
+    in NavigationContainerInner (created by App)
+    in AppProvider (created by App)
+    in ThemeProvider (created by PaperProvider)
+    in RCTView (created by View)
+    in View (created by Portal.Host)
+    in Portal.Host (created by PaperProvider)
+    in RCTView (created by View)
+    in View (created by SafeAreaInsetsContext)
+    in SafeAreaProviderCompat (created by PaperProvider)
+    in PaperProvider (created by App)
+    in RNCSafeAreaProvider (created by SafeAreaProvider)
+    in SafeAreaProvider (created by App)
+    in ErrorBoundary (created by App)
+    in App
+    in RCTView (created by View)
+    in View (created by AppContainer)
+    in RCTView (created by View)
+    in View (created by AppContainer)
+    in AppContainer
+    in main(RootComponent)"}
+ (NOBRIDGE) LOG  Got location: {"lat": 42.24370422914063, "lng": 21.234140848910215}
+ (NOBRIDGE) ERROR  Warning: Error: Rendered more hooks than during the previous render.
+
+This error is located at:
+    in HomeScreen (created by SceneView)
+    in StaticContainer
+    in EnsureSingleNavigator (created by SceneView)
+    in SceneView (created by BottomTabNavigator)
+    in RCTView (created by View)
+    in View (created by Screen)
+    in RCTView (created by View)
+    in View (created by Animated(View))
+    in Animated(View) (created by Background)
+    in Background (created by Screen)
+    in Screen (created by BottomTabView)
+    in RNSScreen (created by Animated(Anonymous))
+    in Animated(Anonymous)
+    in Suspender (created by Freeze)
+    in Suspense (created by Freeze)
+    in Freeze (created by DelayedFreeze)
+    in DelayedFreeze
+    in InnerScreen (created by Screen)
+    in Screen (created by MaybeScreen)
+    in MaybeScreen (created by BottomTabView)
+    in RNSScreenNavigationContainer (created by ScreenContainer)
+    in ScreenContainer (created by MaybeScreenContainer)
+    in MaybeScreenContainer (created by BottomTabView)
+    in RCTView (created by View)
+    in View (created by SafeAreaProviderCompat)
+    in SafeAreaProviderCompat (created by BottomTabView)
+    in BottomTabView (created by BottomTabNavigator)
+    in PreventRemoveProvider (created by NavigationContent)
+    in NavigationContent
+    in Unknown (created by BottomTabNavigator)
+    in BottomTabNavigator (created by AppNavigator)
+    in AppNavigator (created by App)
+    in ThemeProvider
+    in EnsureSingleNavigator
+    in BaseNavigationContainer
+    in NavigationContainerInner (created by App)
+    in AppProvider (created by App)
+    in ThemeProvider (created by PaperProvider)
+    in RCTView (created by View)
+    in View (created by Portal.Host)
+    in Portal.Host (created by PaperProvider)
+    in RCTView (created by View)
+    in View (created by SafeAreaInsetsContext)
+    in SafeAreaProviderCompat (created by PaperProvider)
+    in PaperProvider (created by App)
+    in RNCSafeAreaProvider (created by SafeAreaProvider)
+    in SafeAreaProvider (created by App)
+    in ErrorBoundary (created by App)
+    in App
+    in RCTView (created by View)
+    in View (created by AppContainer)
+    in RCTView (created by View)
+    in View (created by AppContainer)
+    in AppContainer
+    in main(RootComponent)
+ (NOBRIDGE) LOG  Error caught by boundary: [Error: Rendered more hooks than during the previous render.] {"componentStack": "
+    in HomeScreen (created by SceneView)
+    in StaticContainer
+    in EnsureSingleNavigator (created by SceneView)
+    in SceneView (created by BottomTabNavigator)
+    in RCTView (created by View)
+    in View (created by Screen)
+    in RCTView (created by View)
+    in View (created by Animated(View))
+    in Animated(View) (created by Background)
+    in Background (created by Screen)
+    in Screen (created by BottomTabView)
+    in RNSScreen (created by Animated(Anonymous))
+    in Animated(Anonymous)
+    in Suspender (created by Freeze)
+    in Suspense (created by Freeze)
+    in Freeze (created by DelayedFreeze)
+    in DelayedFreeze
+    in InnerScreen (created by Screen)
+    in Screen (created by MaybeScreen)
+    in MaybeScreen (created by BottomTabView)
+    in RNSScreenNavigationContainer (created by ScreenContainer)
+    in ScreenContainer (created by MaybeScreenContainer)
+    in MaybeScreenContainer (created by BottomTabView)
+    in RCTView (created by View)
+    in View (created by SafeAreaProviderCompat)
+    in SafeAreaProviderCompat (created by BottomTabView)
+    in BottomTabView (created by BottomTabNavigator)
+    in PreventRemoveProvider (created by NavigationContent)
+    in NavigationContent
+    in Unknown (created by BottomTabNavigator)
+    in BottomTabNavigator (created by AppNavigator)
+    in AppNavigator (created by App)
+    in ThemeProvider
+    in EnsureSingleNavigator
+    in BaseNavigationContainer
+    in NavigationContainerInner (created by App)
+    in AppProvider (created by App)
+    in ThemeProvider (created by PaperProvider)
+    in RCTView (created by View)
+    in View (created by Portal.Host)
+    in Portal.Host (created by PaperProvider)
+    in RCTView (created by View)
+    in View (created by SafeAreaInsetsContext)
+    in SafeAreaProviderCompat (created by PaperProvider)
+    in PaperProvider (created by App)
+    in RNCSafeAreaProvider (created by SafeAreaProvider)
+    in SafeAreaProvider (created by App)
+    in ErrorBoundary (created by App)
+    in App
+    in RCTView (created by View)
+    in View (created by AppContainer)
+    in RCTView (created by View)
+    in View (created by AppContainer)
+    in AppContainer
+    in main(RootComponent)"}
+ (NOBRIDGE) LOG  Got location: {"lat": 42.24370451521671, "lng": 21.234140557281417}
