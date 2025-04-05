@@ -1,28 +1,22 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text } from 'react-native';
 
-// Very minimal app component
-function App() {
+// Extremely basic component for testing
+export default function App() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>BarberX</Text>
+    <View style={{
+      flex: 1,
+      backgroundColor: 'red',
+      justifyContent: 'center',
+      alignItems: 'center'
+    }}>
+      <Text style={{
+        fontSize: 30,
+        color: 'white',
+        fontWeight: 'bold'
+      }}>
+        BarberX App
+      </Text>
     </View>
   );
 }
-
-// Styles
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#ffffff',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#000000',
-  }
-});
-
-export default App;

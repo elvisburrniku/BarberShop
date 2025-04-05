@@ -33,7 +33,8 @@
       "permissions": ["ACCESS_COARSE_LOCATION", "ACCESS_FINE_LOCATION"]
     },
     "web": {
-      "favicon": "./src/assets/images/logo.png"
+      "favicon": "./src/assets/images/logo.png",
+      "bundler": "metro"
     },
     "extra": {
       "eas": {

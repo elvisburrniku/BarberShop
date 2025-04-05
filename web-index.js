@@ -1,34 +1,14 @@
-import { createElement } from 'react';
-import { createRoot } from 'react-dom/client';
+// Web entry point
+import { AppRegistry } from 'react-native';
 import App from './App';
 
-// Ensure the URL polyfill is properly loaded
-import './src/utils/URLPolyfill';
-
-// Function to initialize the app
-function initializeApp() {
-  // Get the root element
-  const rootElement = document.getElementById('root');
-  if (!rootElement) {
-    console.error('Root element not found!');
-    return;
-  }
-
-  // Log that we're initializing
-  console.log('BarberX: Initializing web app...');
-  
-  // Create a root with react-dom
-  const root = createRoot(rootElement);
-  
-  // Render the app
-  root.render(createElement(App));
-  
-  console.log('BarberX: Web app initialized successfully!');
+if (document.getElementById('app-root') === null) {
+  const rootTag = document.createElement('div');
+  rootTag.id = 'app-root';
+  document.body.appendChild(rootTag);
 }
 
-// Run the initialization when the DOM is ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initializeApp);
-} else {
-  initializeApp();
-}
+AppRegistry.registerComponent('BarberX', () => App);
+AppRegistry.runApplication('BarberX', {
+  rootTag: document.getElementById('app-root')
+});
