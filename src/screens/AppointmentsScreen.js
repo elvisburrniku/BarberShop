@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
 import { 
   Title, 
@@ -21,19 +21,21 @@ const AppointmentsScreen = ({ navigation }) => {
   const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
   const [appointmentToCancel, setAppointmentToCancel] = useState(null);
 
-  // Filter appointments based on selected filter
-  const filteredAppointments = appointments.filter(appointment => {
-    switch (filter) {
-      case 'upcoming':
-        return appointment.status === 'upcoming';
-      case 'past':
-        return appointment.status === 'completed';
-      case 'cancelled':
-        return appointment.status === 'cancelled';
-      default:
-        return true;
-    }
-  });
+  // Filter appointments based on selected filter using useMemo to prevent recalculations
+  const filteredAppointments = useMemo(() => {
+    return appointments.filter(appointment => {
+      switch (filter) {
+        case 'upcoming':
+          return appointment.status === 'upcoming';
+        case 'past':
+          return appointment.status === 'completed';
+        case 'cancelled':
+          return appointment.status === 'cancelled';
+        default:
+          return true;
+      }
+    });
+  }, [appointments, filter]);
 
   // Show cancel confirmation dialog
   const showCancelDialog = (appointment) => {

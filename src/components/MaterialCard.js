@@ -83,31 +83,46 @@ const MaterialCard = ({
   // If card is pressable
   if (onPress) {
     return (
-      <Pressable
-        onPress={onPress}
-        onPressIn={handlePressIn}
-        onPressOut={handlePressOut}
-        style={[cardStyle, getStateStyle(), style]}
-        android_ripple={ripple ? { color: `${theme.colors.primary}30`, borderless: false } : null}
-      >
-        {children}
-      </Pressable>
+      <View style={[cardStyle, style]}>
+        <Pressable
+          onPress={onPress}
+          onPressIn={handlePressIn}
+          onPressOut={handlePressOut}
+          style={[styles.surfaceInner, getStateStyle()]}
+          android_ripple={ripple ? { color: `${theme.colors.primary}30`, borderless: false } : null}
+        >
+          <View style={styles.contentContainer}>
+            {children}
+          </View>
+        </Pressable>
+      </View>
     );
   }
   
   // If card is not pressable
   return (
-    <Surface style={[cardStyle, style]}>
-      {children}
-    </Surface>
+    <View style={[cardStyle, style]}>
+      <Surface style={styles.surfaceInner}>
+        <View style={styles.contentContainer}>
+          {children}
+        </View>
+      </Surface>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   card: {
-    padding: 16,
     margin: 8,
     borderRadius: 12,
+  },
+  surfaceInner: {
+    borderRadius: 12,
+    width: '100%',
+    height: '100%',
+  },
+  contentContainer: {
+    padding: 16,
   },
 });
 

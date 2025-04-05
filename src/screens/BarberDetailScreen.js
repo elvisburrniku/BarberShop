@@ -79,9 +79,9 @@ const BarberDetailScreen = ({ route, navigation }) => {
               <Text style={styles.address}>{barber.location.address}</Text>
             </View>
             <Icon 
-              name={barber.isFavorite ? "heart" : "heart-outline"} 
+              name={barber.isFavorite ? "heart" : "heart"} 
               size={24} 
-              color={barber.isFavorite ? theme.colors.error : theme.colors.text}
+              color={barber.isFavorite ? theme.colors.error : theme.colors.text + '40'}
               onPress={handleFavoriteToggle}
             />
           </View>

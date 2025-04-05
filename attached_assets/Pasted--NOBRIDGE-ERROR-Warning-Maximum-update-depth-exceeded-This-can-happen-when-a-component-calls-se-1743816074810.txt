@@ -1,0 +1,220 @@
+ (NOBRIDGE) ERROR  Warning: Maximum update depth exceeded. This can happen when a component calls setState inside useEffect, but useEffect either doesn't have a dependency array, or one of the dependencies changes on every render.
+    in PortalConsumer
+    in Portal
+    in ThemedComponent (created by withTheme(Portal))
+    in withTheme(Portal) (created by AppointmentsScreen)
+    in RCTView (created by View)
+    in View (created by AppointmentsScreen)
+    in AppointmentsScreen (created by SceneView)
+    in StaticContainer
+    in EnsureSingleNavigator (created by SceneView)
+    in SceneView (created by BottomTabNavigator)
+    in RCTView (created by View)
+    in View (created by Screen)
+    in RCTView (created by View)
+    in View (created by Animated(View))
+    in Animated(View) (created by Background)
+    in Background (created by Screen)
+    in Screen (created by BottomTabView)
+    in RNSScreen (created by Animated(Anonymous))
+    in Animated(Anonymous)
+    in Suspender (created by Freeze)
+    in Suspense (created by Freeze)
+    in Freeze (created by DelayedFreeze)
+    in DelayedFreeze
+    in InnerScreen (created by Screen)
+    in Screen (created by MaybeScreen)
+    in MaybeScreen (created by BottomTabView)
+    in RNSScreenNavigationContainer (created by ScreenContainer)
+    in ScreenContainer (created by MaybeScreenContainer)
+    in MaybeScreenContainer (created by BottomTabView)
+    in RCTView (created by View)
+    in View (created by SafeAreaProviderCompat)
+    in SafeAreaProviderCompat (created by BottomTabView)
+    in BottomTabView (created by BottomTabNavigator)
+    in PreventRemoveProvider (created by NavigationContent)
+    in NavigationContent
+    in Unknown (created by BottomTabNavigator)
+    in BottomTabNavigator (created by AppNavigator)
+    in AppNavigator (created by App)
+    in ThemeProvider
+    in EnsureSingleNavigator
+    in BaseNavigationContainer
+    in NavigationContainerInner (created by App)
+    in AppProvider (created by App)
+    in ThemeProvider (created by PaperProvider)
+    in RCTView (created by View)
+    in View (created by Portal.Host)
+    in Portal.Host (created by PaperProvider)
+    in RCTView (created by View)
+    in View (created by SafeAreaInsetsContext)
+    in SafeAreaProviderCompat (created by PaperProvider)
+    in PaperProvider (created by App)
+    in RNCSafeAreaProvider (created by SafeAreaProvider)
+    in SafeAreaProvider (created by App)
+    in ErrorBoundary (created by App)
+    in App
+    in RCTView (created by View)
+    in View (created by AppContainer)
+    in RCTView (created by View)
+    in View (created by AppContainer)
+    in AppContainer
+    in main(RootComponent)
+ (NOBRIDGE) WARN  "heart-outline" is not a valid icon name for family "feather" [Component Stack]
+ (NOBRIDGE) WARN  When setting overflow to hidden on Surface the shadow will not be displayed correctly. Wrap the content of your component in a separate View with the overflow style. [Component Stack]
+ (NOBRIDGE) WARN  When setting overflow to hidden on Surface the shadow will not be displayed correctly. Wrap the content of your component in a separate View with the overflow style. [Component Stack]
+ (NOBRIDGE) WARN  When setting overflow to hidden on Surface the shadow will not be displayed correctly. Wrap the content of your component in a separate View with the overflow style. [Component Stack]
+ (NOBRIDGE) WARN  "heart-outline" is not a valid icon name for family "feather" [Component Stack]
+ (NOBRIDGE) WARN  When setting overflow to hidden on Surface the shadow will not be displayed correctly. Wrap the content of your component in a separate View with the overflow style. [Component Stack]
+ (NOBRIDGE) WARN  When setting overflow to hidden on Surface the shadow will not be displayed correctly. Wrap the content of your component in a separate View with the overflow style. [Component Stack]
+ (NOBRIDGE) WARN  When setting overflow to hidden on Surface the shadow will not be displayed correctly. Wrap the content of your component in a separate View with the overflow style. [Component Stack]
+ (NOBRIDGE) WARN  "heart-outline" is not a valid icon name for family "feather" [Component Stack]
+ (NOBRIDGE) WARN  When setting overflow to hidden on Surface the shadow will not be displayed correctly. Wrap the content of your component in a separate View with the overflow style. [Component Stack]
+ (NOBRIDGE) WARN  When setting overflow to hidden on Surface the shadow will not be displayed correctly. Wrap the content of your component in a separate View with the overflow style. [Component Stack]
+ (NOBRIDGE) WARN  When setting overflow to hidden on Surface the shadow will not be displayed correctly. Wrap the content of your component in a separate View with the overflow style. [Component Stack]
+ (NOBRIDGE) WARN  "heart-outline" is not a valid icon name for family "feather" [Component Stack]
+ (NOBRIDGE) WARN  When setting overflow to hidden on Surface the shadow will not be displayed correctly. Wrap the content of your component in a separate View with the overflow style. [Component Stack]
+ (NOBRIDGE) WARN  When setting overflow to hidden on Surface the shadow will not be displayed correctly. Wrap the content of your component in a separate View with the overflow style. [Component Stack]
+ (NOBRIDGE) WARN  When setting overflow to hidden on Surface the shadow will not be displayed correctly. Wrap the content of your component in a separate View with the overflow style. [Component Stack]
+ (NOBRIDGE) WARN  "heart-outline" is not a valid icon name for family "feather" [Component Stack]
+ (NOBRIDGE) WARN  When setting overflow to hidden on Surface the shadow will not be displayed correctly. Wrap the content of your component in a separate View with the overflow style. [Component Stack]
+ (NOBRIDGE) WARN  When setting overflow to hidden on Surface the shadow will not be displayed correctly. Wrap the content of your component in a separate View with the overflow style. [Component Stack]
+ (NOBRIDGE) WARN  When setting overflow to hidden on Surface the shadow will not be displayed correctly. Wrap the content of your component in a separate View with the overflow style. [Component Stack]
+ (NOBRIDGE) WARN  "heart-outline" is not a valid icon name for family "feather" [Component Stack]
+ (NOBRIDGE) WARN  When setting overflow to hidden on Surface the shadow will not be displayed correctly. Wrap the content of your component in a separate View with the overflow style. [Component Stack]
+ (NOBRIDGE) WARN  When setting overflow to hidden on Surface the shadow will not be displayed correctly. Wrap the content of your component in a separate View with the overflow style. [Component Stack]
+ (NOBRIDGE) WARN  When setting overflow to hidden on Surface the shadow will not be displayed correctly. Wrap the content of your component in a separate View with the overflow style. [Component Stack]
+ (NOBRIDGE) WARN  "heart-outline" is not a valid icon name for family "feather" [Component Stack]
+ (NOBRIDGE) WARN  When setting overflow to hidden on Surface the shadow will not be displayed correctly. Wrap the content of your component in a separate View with the overflow style. [Component Stack]
+ (NOBRIDGE) WARN  When setting overflow to hidden on Surface the shadow will not be displayed correctly. Wrap the content of your component in a separate View with the overflow style. [Component Stack]
+ (NOBRIDGE) WARN  When setting overflow to hidden on Surface the shadow will not be displayed correctly. Wrap the content of your component in a separate View with the overflow style. [Component Stack]
+ (NOBRIDGE) WARN  "heart-outline" is not a valid icon name for family "feather" [Component Stack]
+ (NOBRIDGE) WARN  When setting overflow to hidden on Surface the shadow will not be displayed correctly. Wrap the content of your component in a separate View with the overflow style. [Component Stack]
+ (NOBRIDGE) WARN  When setting overflow to hidden on Surface the shadow will not be displayed correctly. Wrap the content of your component in a separate View with the overflow style. [Component Stack]
+ (NOBRIDGE) WARN  When setting overflow to hidden on Surface the shadow will not be displayed correctly. Wrap the content of your component in a separate View with the overflow style. [Component Stack]
+ (NOBRIDGE) ERROR  Warning: Error: Maximum update depth exceeded. This can happen when a component repeatedly calls setState inside componentWillUpdate or componentDidUpdate. React limits the number of nested updates to prevent infinite loops.
+
+This error is located at:
+    in PortalConsumer
+    in Portal
+    in ThemedComponent (created by withTheme(Portal))
+    in withTheme(Portal) (created by AppointmentsScreen)
+    in RCTView (created by View)
+    in View (created by AppointmentsScreen)
+    in AppointmentsScreen (created by SceneView)
+    in StaticContainer
+    in EnsureSingleNavigator (created by SceneView)
+    in SceneView (created by BottomTabNavigator)
+    in RCTView (created by View)
+    in View (created by Screen)
+    in RCTView (created by View)
+    in View (created by Animated(View))
+    in Animated(View) (created by Background)
+    in Background (created by Screen)
+    in Screen (created by BottomTabView)
+    in RNSScreen (created by Animated(Anonymous))
+    in Animated(Anonymous)
+    in Suspender (created by Freeze)
+    in Suspense (created by Freeze)
+    in Freeze (created by DelayedFreeze)
+    in DelayedFreeze
+    in InnerScreen (created by Screen)
+    in Screen (created by MaybeScreen)
+    in MaybeScreen (created by BottomTabView)
+    in RNSScreenNavigationContainer (created by ScreenContainer)
+    in ScreenContainer (created by MaybeScreenContainer)
+    in MaybeScreenContainer (created by BottomTabView)
+    in RCTView (created by View)
+    in View (created by SafeAreaProviderCompat)
+    in SafeAreaProviderCompat (created by BottomTabView)
+    in BottomTabView (created by BottomTabNavigator)
+    in PreventRemoveProvider (created by NavigationContent)
+    in NavigationContent
+    in Unknown (created by BottomTabNavigator)
+    in BottomTabNavigator (created by AppNavigator)
+    in AppNavigator (created by App)
+    in ThemeProvider
+    in EnsureSingleNavigator
+    in BaseNavigationContainer
+    in NavigationContainerInner (created by App)
+    in AppProvider (created by App)
+    in ThemeProvider (created by PaperProvider)
+    in RCTView (created by View)
+    in View (created by Portal.Host)
+    in Portal.Host (created by PaperProvider)
+    in RCTView (created by View)
+    in View (created by SafeAreaInsetsContext)
+    in SafeAreaProviderCompat (created by PaperProvider)
+    in PaperProvider (created by App)
+    in RNCSafeAreaProvider (created by SafeAreaProvider)
+    in SafeAreaProvider (created by App)
+    in ErrorBoundary (created by App)
+    in App
+    in RCTView (created by View)
+    in View (created by AppContainer)
+    in RCTView (created by View)
+    in View (created by AppContainer)
+    in AppContainer
+    in main(RootComponent)
+ (NOBRIDGE) LOG  Error caught by boundary: [Error: Maximum update depth exceeded. This can happen when a component repeatedly calls setState inside componentWillUpdate or componentDidUpdate. React limits the number of nested updates to prevent infinite loops.] {"componentStack": "
+    in PortalConsumer
+    in Portal
+    in ThemedComponent (created by withTheme(Portal))
+    in withTheme(Portal) (created by AppointmentsScreen)
+    in RCTView (created by View)
+    in View (created by AppointmentsScreen)
+    in AppointmentsScreen (created by SceneView)
+    in StaticContainer
+    in EnsureSingleNavigator (created by SceneView)
+    in SceneView (created by BottomTabNavigator)
+    in RCTView (created by View)
+    in View (created by Screen)
+    in RCTView (created by View)
+    in View (created by Animated(View))
+    in Animated(View) (created by Background)
+    in Background (created by Screen)
+    in Screen (created by BottomTabView)
+    in RNSScreen (created by Animated(Anonymous))
+    in Animated(Anonymous)
+    in Suspender (created by Freeze)
+    in Suspense (created by Freeze)
+    in Freeze (created by DelayedFreeze)
+    in DelayedFreeze
+    in InnerScreen (created by Screen)
+    in Screen (created by MaybeScreen)
+    in MaybeScreen (created by BottomTabView)
+    in RNSScreenNavigationContainer (created by ScreenContainer)
+    in ScreenContainer (created by MaybeScreenContainer)
+    in MaybeScreenContainer (created by BottomTabView)
+    in RCTView (created by View)
+    in View (created by SafeAreaProviderCompat)
+    in SafeAreaProviderCompat (created by BottomTabView)
+    in BottomTabView (created by BottomTabNavigator)
+    in PreventRemoveProvider (created by NavigationContent)
+    in NavigationContent
+    in Unknown (created by BottomTabNavigator)
+    in BottomTabNavigator (created by AppNavigator)
+    in AppNavigator (created by App)
+    in ThemeProvider
+    in EnsureSingleNavigator
+    in BaseNavigationContainer
+    in NavigationContainerInner (created by App)
+    in AppProvider (created by App)
+    in ThemeProvider (created by PaperProvider)
+    in RCTView (created by View)
+    in View (created by Portal.Host)
+    in Portal.Host (created by PaperProvider)
+    in RCTView (created by View)
+    in View (created by SafeAreaInsetsContext)
+    in SafeAreaProviderCompat (created by PaperProvider)
+    in PaperProvider (created by App)
+    in RNCSafeAreaProvider (created by SafeAreaProvider)
+    in SafeAreaProvider (created by App)
+    in ErrorBoundary (created by App)
+    in App
+    in RCTView (created by View)
+    in View (created by AppContainer)
+    in RCTView (created by View)
+    in View (created by AppContainer)
+    in AppContainer
+    in main(RootComponent)"}
