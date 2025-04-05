@@ -9,9 +9,7 @@ const AppointmentCard = ({ appointment, barbers, onPress, showActions, onCancel,
 
   // Find the barber for this appointment
   const barber = barbers.find(b => b.id === appointment.barberId);
-
-  if (!barber) return null;
-
+  
   // Get status color
   const getStatusColor = () => {
     switch (appointment.status) {
@@ -25,6 +23,8 @@ const AppointmentCard = ({ appointment, barbers, onPress, showActions, onCancel,
         return theme.colors.text;
     }
   };
+  
+  if (!barber) return null;
 
   return (
     <Card 

@@ -42,7 +42,7 @@ const HomeScreen = ({ navigation }) => {
       setError("There was a problem loading data. Please try again.");
       setSnackbarVisible(true);
     }
-  }, [locationError]);
+  }, [locationError, findNearbyBarberShops, setError, setSnackbarVisible]);
 
   // Safe access to filter appointments (handle potential null values)
   const upcomingAppointments = appointments ? 
