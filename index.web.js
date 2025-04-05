@@ -1,10 +1,6 @@
+// Web entry point using simple AppRegistry approach
 import { AppRegistry } from 'react-native';
 import App from './App';
 
-// Register the app for web specifically
+// Register the app for web
 AppRegistry.registerComponent('main', () => App);
-
-// Mount to root
-AppRegistry.runApplication('main', {
-  rootTag: document.getElementById('root')
-});
