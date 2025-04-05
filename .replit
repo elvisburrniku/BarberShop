@@ -27,11 +27,11 @@ task = "packager.installForAll"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "EXPO_WEB_BUILD_ENTRYPOINT=web-index.js npx expo start --web --port 5000 --host lan"
+args = "npx expo start --web --port 5000 --host lan"
 waitForPort = 5000
 
 [deployment]
-run = ["sh", "-c", "EXPO_WEB_BUILD_ENTRYPOINT=web-index.js npx expo start --web --port 5000 --host lan"]
+run = ["sh", "-c", "npx expo start --web --port 5000 --host lan"]
 
 [[ports]]
 localPort = 5000
