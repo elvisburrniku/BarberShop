@@ -27,22 +27,30 @@ const HomeScreen = ({ navigation }) => {
     findNearbyBarberShops 
   } = useAppContext();
 
-  // Get nearby shops when the screen loads
+  // Get nearby shops when the screen loads - only run once
   useEffect(() => {
-    try {
-      findNearbyBarberShops();
-      
-      // Show location error message if there was a problem
-      if (locationError) {
-        setError("Location services unavailable. Showing all barbers instead.");
+    const loadBarberShops = async () => {
+      try {
+        await findNearbyBarberShops();
+      } catch (err) {
+        console.log('Error loading home data:', err);
+        setError("There was a problem loading data. Please try again.");
         setSnackbarVisible(true);
       }
-    } catch (err) {
-      console.log('Error loading home data:', err);
-      setError("There was a problem loading data. Please try again.");
+    };
+    
+    loadBarberShops();
+    // Only run this effect on initial mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  
+  // Show error message when location error changes
+  useEffect(() => {
+    if (locationError) {
+      setError("Location services unavailable. Showing all barbers instead.");
       setSnackbarVisible(true);
     }
-  }, [locationError, findNearbyBarberShops, setError, setSnackbarVisible]);
+  }, [locationError]);
 
   // Safe access to filter appointments (handle potential null values)
   const upcomingAppointments = appointments ? 
