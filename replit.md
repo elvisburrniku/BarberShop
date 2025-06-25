@@ -4,6 +4,8 @@
 
 RestaurantX is a React Native mobile application built with Expo that allows users to discover restaurants, view menus, read reviews, and make reservations. The application features a modern Material Design 3 inspired interface with comprehensive restaurant discovery, menu browsing, and reservation management capabilities.
 
+**Recent Conversion (December 2024)**: Successfully migrated from BarberX (barber booking) to RestaurantX (restaurant discovery and reservations). All core functionality has been adapted for restaurant use cases.
+
 ## System Architecture
 
 ### Frontend Architecture
@@ -14,19 +16,22 @@ RestaurantX is a React Native mobile application built with Expo that allows use
 - **Styling**: StyleSheet with Google Material Design 3 theming
 - **Icons**: Feather icons and Material Icons
 - **Platform Support**: iOS, Android, and Web (React Native Web)
+- **Web Access**: Available directly in Replit browser via Metro bundler on port 5000
 
 ### Backend Architecture
 - **Database ORM**: Drizzle ORM with PostgreSQL support
 - **Authentication**: JWT-based authentication with bcrypt password hashing
 - **Admin Panel**: Separate Express.js server with React admin interface
 - **Session Management**: Express sessions with PostgreSQL store
-- **API Structure**: RESTful API endpoints for barber management
+- **API Structure**: RESTful API endpoints for restaurant management
+- **Database Schema**: Updated for restaurants, reservations, menus, and reviews
 
 ### Mobile App Structure
 - **Context-driven State**: Centralized app state via AppContext
-- **Component Architecture**: Reusable Material Design components
-- **Screen Organization**: Tab-based navigation with stack screens for detailed flows
-- **Mock Data Integration**: Development-ready with comprehensive mock data
+- **Component Architecture**: Reusable Material Design components for restaurants
+- **Screen Organization**: Tab-based navigation (Home, Discover, Reservations, Profile)
+- **Mock Data Integration**: Restaurant-focused mock data with menu items and reservations
+- **Key Screens**: Restaurant discovery, detailed restaurant view, reservation booking, reservation management
 
 ## Key Components
 
@@ -61,16 +66,16 @@ RestaurantX is a React Native mobile application built with Expo that allows use
 - Appointment lifecycle management (pending → confirmed → completed/cancelled)
 
 ### User Journey
-1. **Discovery**: Users find barbers through location-based search
-2. **Selection**: Detailed barber view with services and availability
-3. **Booking**: Multi-step booking process (service → date → time → confirmation)
-4. **Management**: Users can view, reschedule, or cancel appointments
-5. **Profile**: User account management and preferences
+1. **Discovery**: Users find restaurants through location-based search and cuisine filters
+2. **Selection**: Detailed restaurant view with menu, photos, and reviews
+3. **Reservation**: Multi-step reservation process (date → time → party size → confirmation)
+4. **Management**: Users can view, modify, or cancel reservations
+5. **Profile**: User account management and dining preferences
 
 ### Admin Flow
-- Separate admin portal for barber approval and management
+- Separate admin portal for restaurant approval and management
 - JWT-based admin authentication
-- Barber profile review and status management
+- Restaurant profile review and status management
 - Dashboard with key metrics and recent activity
 
 ## External Dependencies
@@ -113,7 +118,12 @@ RestaurantX is a React Native mobile application built with Expo that allows use
 
 ## Changelog
 
-- June 25, 2025. Initial setup
+- December 25, 2024: Successfully converted BarberX to RestaurantX
+  - Updated all screens for restaurant discovery and reservations
+  - Modified database schema for restaurants, menus, and reservations
+  - Converted navigation and components from barber to restaurant theme
+  - Set up web viewing through Expo Metro bundler
+- June 25, 2025: Initial BarberX setup
 
 ## User Preferences
 
