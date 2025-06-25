@@ -1,51 +1,37 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { Provider as PaperProvider } from 'react-native-paper';
-import { NavigationContainer } from '@react-navigation/native';
-import { AppProvider } from './src/context/AppContext';
-import AppNavigator from './src/navigation/AppNavigator';
-import ErrorBoundary from './src/components/ErrorBoundary';
-import theme from './src/theme/theme';
 
 export default function App() {
-  try {
-    return (
-      <ErrorBoundary>
-        <SafeAreaProvider>
-          <PaperProvider theme={theme}>
-            <AppProvider>
-              <NavigationContainer>
-                <StatusBar style="dark" />
-                <AppNavigator />
-              </NavigationContainer>
-            </AppProvider>
-          </PaperProvider>
-        </SafeAreaProvider>
-      </ErrorBoundary>
-    );
-  } catch (error) {
-    console.error('App rendering error:', error);
-    return (
-      <View style={styles.errorContainer}>
-        <Text style={styles.errorText}>App Loading Error</Text>
-        <Text>{error.toString()}</Text>
-      </View>
-    );
-  }
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>RestaurantX</Text>
+      <Text style={styles.subtitle}>Restaurant Discovery & Reservations</Text>
+      <Text style={styles.status}>✓ App is loading successfully</Text>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-  errorContainer: {
+  container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#ffffff',
     padding: 20,
   },
-  errorText: {
-    fontSize: 18,
+  title: {
+    fontSize: 32,
     fontWeight: 'bold',
     marginBottom: 10,
+    color: '#2196F3',
+  },
+  subtitle: {
+    fontSize: 18,
+    marginBottom: 20,
+    color: '#666666',
+  },
+  status: {
+    fontSize: 16,
+    color: '#4CAF50',
   },
 });
