@@ -4,7 +4,7 @@ import { Title, Text, useTheme, ActivityIndicator, Snackbar } from 'react-native
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useAppContext } from '../context/AppContext';
-import BarberCard from '../components/BarberCard';
+import RestaurantCard from '../components/RestaurantCard';
 import AppointmentCard from '../components/AppointmentCard';
 import MaterialCard from '../components/MaterialCard';
 import MaterialButton from '../components/MaterialButton';
@@ -20,18 +20,19 @@ const HomeScreen = ({ navigation }) => {
   
   const { 
     user, 
-    barberShops, 
-    appointments, 
+    restaurants, 
+    reservations, 
+    featuredRestaurants,
     loading,
     locationError,
-    findNearbyBarberShops 
+    findNearbyRestaurants 
   } = useAppContext();
 
-  // Get nearby shops when the screen loads - only run once
+  // Get nearby restaurants when the screen loads - only run once
   useEffect(() => {
-    const loadBarberShops = async () => {
+    const loadRestaurants = async () => {
       try {
-        await findNearbyBarberShops();
+        await findNearbyRestaurants();
       } catch (err) {
         console.log('Error loading home data:', err);
         setError("There was a problem loading data. Please try again.");
@@ -39,7 +40,7 @@ const HomeScreen = ({ navigation }) => {
       }
     };
     
-    loadBarberShops();
+    loadRestaurants();
     // Only run this effect on initial mount
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -47,7 +48,7 @@ const HomeScreen = ({ navigation }) => {
   // Show error message when location error changes
   useEffect(() => {
     if (locationError) {
-      setError("Location services unavailable. Showing all barbers instead.");
+      setError("Location services unavailable. Showing all restaurants instead.");
       setSnackbarVisible(true);
     }
   }, [locationError]);

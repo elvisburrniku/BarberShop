@@ -59,8 +59,8 @@ export default function App() {
             }
           ]}
         >
-          <MaterialIcons name="content-cut" size={60} color={theme.colors.primary} />
-          <Text style={[styles.appTitle, { color: theme.colors.primary }]}>BarberX</Text>
+          <MaterialIcons name="restaurant" size={60} color={theme.colors.primary} />
+          <Text style={[styles.appTitle, { color: theme.colors.primary }]}>RestaurantX</Text>
         </Animated.View>
         <ActivityIndicator 
           size="large" 
@@ -68,7 +68,7 @@ export default function App() {
           style={{ marginTop: 40 }} 
         />
         <Text style={[styles.loadingText, { color: theme.colors.text }]}>
-          Loading amazing haircuts...
+          Finding delicious restaurants...
         </Text>
       </View>
     );

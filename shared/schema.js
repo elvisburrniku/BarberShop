@@ -2,12 +2,12 @@ import { pgTable, serial, text, boolean, timestamp, integer, pgEnum } from 'driz
 import { relations } from 'drizzle-orm';
 
 // Enum for user roles
-export const userRoleEnum = pgEnum('user_role', ['admin', 'user', 'barber']);
+export const userRoleEnum = pgEnum('user_role', ['admin', 'user', 'restaurant_owner']);
 
-// Enum for appointment status
-export const appointmentStatusEnum = pgEnum('appointment_status', ['pending', 'confirmed', 'cancelled', 'completed']);
+// Enum for reservation status
+export const reservationStatusEnum = pgEnum('reservation_status', ['pending', 'confirmed', 'cancelled', 'completed']);
 
-// Enum for barber approval status
+// Enum for restaurant approval status
 export const approvalStatusEnum = pgEnum('approval_status', ['pending', 'approved', 'rejected']);
 
 // Users table
@@ -33,12 +33,13 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   appointments: many(appointments),
 }));
 
-// Barber profiles table
-export const barberProfiles = pgTable('barber_profiles', {
+// Restaurant profiles table
+export const restaurantProfiles = pgTable('restaurant_profiles', {
   id: serial('id').primaryKey(),
   userId: integer('user_id').references(() => users.id).notNull().unique(),
-  shopName: text('shop_name').notNull(),
+  name: text('name').notNull(),
   description: text('description'),
+  cuisine: text('cuisine').notNull(),
   address: text('address').notNull(),
   city: text('city').notNull(),
   state: text('state').notNull(),
@@ -46,6 +47,10 @@ export const barberProfiles = pgTable('barber_profiles', {
   lat: text('lat'),
   lng: text('lng'),
   rating: integer('rating'),
+  priceLevel: integer('price_level').default(2), // 1-4 scale
+  phone: text('phone'),
+  website: text('website'),
+  hours: text('hours'), // JSON string for operating hours
   approvalStatus: approvalStatusEnum('approval_status').default('pending').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),

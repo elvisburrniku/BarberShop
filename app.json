@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "BarberX",
-    "slug": "barberx",
+    "name": "RestaurantX",
+    "slug": "restaurantx",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./src/assets/images/logo.png",
@@ -19,9 +19,9 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.barberx.app",
+      "bundleIdentifier": "com.restaurantx.app",
       "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "BarberX needs your location to find nearby barber shops."
+        "NSLocationWhenInUseUsageDescription": "RestaurantX needs your location to find nearby restaurants."
       }
     },
     "android": {
@@ -29,11 +29,12 @@
         "foregroundImage": "./generated-icon.png",
         "backgroundColor": "#2c3e50"
       },
-      "package": "com.barberx.app",
+      "package": "com.restaurantx.app",
       "permissions": ["ACCESS_COARSE_LOCATION", "ACCESS_FINE_LOCATION"]
     },
     "web": {
-      "favicon": "./src/assets/images/logo.png"
+      "favicon": "./src/assets/images/logo.png",
+      "bundler": "metro"
     },
     "extra": {
       "eas": {

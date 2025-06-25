@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import { mockBarberShops, mockServices, mockAppointments, mockUser } from '../utils/MockData';
+import { mockRestaurants, mockMenuItems, mockReservations, mockUser, mockFeaturedRestaurants, mockCuisineCategories } from '../utils/RestaurantMockData';
 import { getCurrentLocation, requestLocationPermission, calculateDistance } from '../utils/LocationService';
 
 const AppContext = createContext();
@@ -8,15 +8,18 @@ export const useAppContext = () => useContext(AppContext);
 
 export const AppProvider = ({ children }) => {
   const [user, setUser] = useState(mockUser);
-  const [barberShops, setBarberShops] = useState(mockBarberShops);
-  const [services, setServices] = useState(mockServices);
-  const [appointments, setAppointments] = useState(mockAppointments);
+  const [restaurants, setRestaurants] = useState(mockRestaurants);
+  const [menuItems, setMenuItems] = useState(mockMenuItems);
+  const [reservations, setReservations] = useState(mockReservations);
+  const [featuredRestaurants, setFeaturedRestaurants] = useState(mockFeaturedRestaurants);
+  const [cuisineCategories, setCuisineCategories] = useState(mockCuisineCategories);
   const [userLocation, setUserLocation] = useState(null);
   const [locationError, setLocationError] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [selectedBarber, setSelectedBarber] = useState(null);
-  const [selectedServices, setSelectedServices] = useState([]);
-  const [selectedDateTime, setSelectedDateTime] = useState(null);
+  const [selectedRestaurant, setSelectedRestaurant] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedTime, setSelectedTime] = useState(null);
+  const [partySize, setPartySize] = useState(2);
 
   // Get the user's location when the app starts
   useEffect(() => {
@@ -73,17 +76,13 @@ export const AppProvider = ({ children }) => {
     })();
   }, []);
 
-  // Find nearby barber shops based on user location
-  const findNearbyBarberShops = async () => {
+  // Find nearby restaurants based on user location
+  const findNearbyRestaurants = async () => {
     try {
       setLoading(true);
       
-      // In a real app, we would call an API to get nearby shops
-      // based on the user's location coordinates
-      
       // Check if we have a user location
       if (!userLocation && !locationError) {
-        // Try to get location again if we don't have it yet
         const location = await getCurrentLocation();
         
         if (location) {
@@ -96,82 +95,83 @@ export const AppProvider = ({ children }) => {
         }
       }
       
-      // For this MVP with mock data, we filter by distance from user
+      // Calculate distance for each restaurant from user's location
       if (userLocation) {
-        // Calculate distance for each barber shop from user's location
-        const shopsWithDistance = barberShops.map(shop => {
+        const restaurantsWithDistance = restaurants.map(restaurant => {
           const distance = calculateDistance(
             { lat: userLocation.lat, lng: userLocation.lng },
-            { lat: shop.location.lat, lng: shop.location.lng }
+            { lat: restaurant.location.lat, lng: restaurant.location.lng }
           );
           
           return {
-            ...shop,
+            ...restaurant,
             distance: parseFloat(distance.toFixed(1))
           };
         });
         
         // Sort by distance
-        const sortedShops = [...shopsWithDistance].sort((a, b) => a.distance - b.distance);
-        setBarberShops(sortedShops);
+        const sortedRestaurants = [...restaurantsWithDistance].sort((a, b) => a.distance - b.distance);
+        setRestaurants(sortedRestaurants);
       }
       
-      return barberShops;
+      return restaurants;
     } catch (error) {
-      console.log('Error finding nearby barber shops:', error);
-      setLocationError('Error finding nearby barber shops');
-      return barberShops;
+      console.log('Error finding nearby restaurants:', error);
+      setLocationError('Error finding nearby restaurants');
+      return restaurants;
     } finally {
       setLoading(false);
     }
   };
 
-  // Book an appointment
-  const bookAppointment = (barberId, date, services) => {
-    const newAppointment = {
-      id: `app-${appointments.length + 1}`,
-      barberId,
-      date,
-      services,
-      status: 'upcoming',
+  // Make a reservation
+  const makeReservation = (reservationData) => {
+    const newReservation = {
+      id: `res-${reservations.length + 1}`,
+      userId: user.id,
+      restaurantId: reservationData.restaurantId,
+      date: `${reservationData.date}T${reservationData.time}:00Z`,
+      partySize: reservationData.partySize,
+      specialRequests: reservationData.specialRequests,
+      status: 'confirmed',
+      createdAt: new Date().toISOString(),
     };
 
-    setAppointments([...appointments, newAppointment]);
-    return newAppointment;
+    setReservations([...reservations, newReservation]);
+    return newReservation;
   };
 
-  // Cancel an appointment
-  const cancelAppointment = (appointmentId) => {
-    const updatedAppointments = appointments.map(app => 
-      app.id === appointmentId ? { ...app, status: 'cancelled' } : app
+  // Cancel a reservation
+  const cancelReservation = (reservationId) => {
+    const updatedReservations = reservations.map(res => 
+      res.id === reservationId ? { ...res, status: 'cancelled' } : res
     );
-    setAppointments(updatedAppointments);
+    setReservations(updatedReservations);
   };
 
-  // Add a barber to favorites
-  const toggleFavoriteBarber = (barberId) => {
-    const updatedBarberShops = barberShops.map(shop => {
-      if (shop.id === barberId) {
-        return { ...shop, isFavorite: !shop.isFavorite };
+  // Add a restaurant to favorites
+  const toggleFavoriteRestaurant = (restaurantId) => {
+    const updatedRestaurants = restaurants.map(restaurant => {
+      if (restaurant.id === restaurantId) {
+        return { ...restaurant, isFavorite: !restaurant.isFavorite };
       }
-      return shop;
+      return restaurant;
     });
-    setBarberShops(updatedBarberShops);
+    setRestaurants(updatedRestaurants);
   };
 
-  // Get available time slots for a specific date and barber
-  const getAvailableTimeSlots = (barberId, date) => {
-    // In a real app, this would query the backend
-    // For MVP, we'll generate some time slots
+  // Get available time slots for a specific date and restaurant
+  const getAvailableTimeSlots = (restaurantId, date) => {
     const timeSlots = [];
-    const startHour = 9; // 9 AM
-    const endHour = 18; // 6 PM
+    const startHour = 11; // 11 AM
+    const endHour = 22; // 10 PM
     
     for (let hour = startHour; hour < endHour; hour++) {
       for (let minute = 0; minute < 60; minute += 30) {
+        const timeString = `${hour > 12 ? hour - 12 : hour}:${minute === 0 ? '00' : minute} ${hour >= 12 ? 'PM' : 'AM'}`;
         timeSlots.push({
-          time: `${hour}:${minute === 0 ? '00' : minute}`,
-          available: Math.random() > 0.3 // Randomly mark some as unavailable
+          time: timeString,
+          available: Math.random() > 0.4 // Randomly mark some as unavailable
         });
       }
     }
@@ -179,44 +179,55 @@ export const AppProvider = ({ children }) => {
     return timeSlots;
   };
 
-  // Calculate total price for selected services
-  const calculateTotalPrice = (serviceIds) => {
-    return serviceIds.reduce((total, serviceId) => {
-      const service = services.find(s => s.id === serviceId);
-      return total + (service ? service.price : 0);
-    }, 0);
+  // Search restaurants by name, cuisine, or location
+  const searchRestaurants = (query) => {
+    if (!query.trim()) {
+      return restaurants;
+    }
+    
+    const searchTerm = query.toLowerCase();
+    return restaurants.filter(restaurant => 
+      restaurant.name.toLowerCase().includes(searchTerm) ||
+      restaurant.cuisine.toLowerCase().includes(searchTerm) ||
+      restaurant.location.address.toLowerCase().includes(searchTerm)
+    );
   };
 
-  // Reset the booking form
-  const resetBooking = () => {
-    setSelectedBarber(null);
-    setSelectedServices([]);
-    setSelectedDateTime(null);
+  // Reset the reservation form
+  const resetReservation = () => {
+    setSelectedRestaurant(null);
+    setSelectedDate(null);
+    setSelectedTime(null);
+    setPartySize(2);
   };
 
   return (
     <AppContext.Provider value={{
       user,
-      barberShops,
-      services,
-      appointments,
+      restaurants,
+      menuItems,
+      reservations,
+      featuredRestaurants,
+      cuisineCategories,
       userLocation,
       locationError,
       loading,
-      selectedBarber,
-      selectedServices,
-      selectedDateTime,
+      selectedRestaurant,
+      selectedDate,
+      selectedTime,
+      partySize,
       setUser,
-      setSelectedBarber,
-      setSelectedServices,
-      setSelectedDateTime,
-      findNearbyBarberShops,
-      bookAppointment,
-      cancelAppointment,
-      toggleFavoriteBarber,
+      setSelectedRestaurant,
+      setSelectedDate,
+      setSelectedTime,
+      setPartySize,
+      findNearbyRestaurants,
+      makeReservation,
+      cancelReservation,
+      toggleFavoriteRestaurant,
       getAvailableTimeSlots,
-      calculateTotalPrice,
-      resetBooking
+      searchRestaurants,
+      resetReservation
     }}>
       {children}
     </AppContext.Provider>

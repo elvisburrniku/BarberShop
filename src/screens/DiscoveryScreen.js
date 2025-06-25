@@ -9,7 +9,7 @@ import {
   ActivityIndicator 
 } from 'react-native-paper';
 import { useAppContext } from '../context/AppContext';
-import BarberCard from '../components/BarberCard';
+import RestaurantCard from '../components/RestaurantCard';
 import LocationSearch from '../components/LocationSearch';
 import { getBarbersByLocation } from '../utils/LocationService';
 

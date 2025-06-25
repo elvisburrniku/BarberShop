@@ -7,9 +7,9 @@ import Icon from 'react-native-vector-icons/Feather';
 // Screens
 import HomeScreen from '../screens/HomeScreen';
 import DiscoveryScreen from '../screens/DiscoveryScreen';
-import BarberDetailScreen from '../screens/BarberDetailScreen';
-import BookingScreen from '../screens/BookingScreen';
-import AppointmentsScreen from '../screens/AppointmentsScreen';
+import RestaurantDetailScreen from '../screens/RestaurantDetailScreen';
+import ReservationScreen from '../screens/ReservationScreen';
+import ReservationsScreen from '../screens/ReservationsScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 
 const Tab = createBottomTabNavigator();
@@ -30,17 +30,17 @@ const DiscoveryStack = () => {
       <Stack.Screen 
         name="Discover" 
         component={DiscoveryScreen} 
-        options={{ title: 'Find a Barber' }} 
+        options={{ title: 'Find Restaurants' }} 
       />
       <Stack.Screen 
-        name="BarberDetail" 
-        component={BarberDetailScreen} 
-        options={{ title: 'Barber Details' }} 
+        name="RestaurantDetail" 
+        component={RestaurantDetailScreen} 
+        options={{ title: 'Restaurant Details' }} 
       />
       <Stack.Screen 
-        name="Booking" 
-        component={BookingScreen} 
-        options={{ title: 'Book Appointment' }} 
+        name="Reservation" 
+        component={ReservationScreen} 
+        options={{ title: 'Make Reservation' }} 
       />
     </Stack.Navigator>
   );
@@ -75,12 +75,12 @@ const AppNavigator = () => {
         component={DiscoveryStack} 
         options={{
           tabBarLabel: 'Discover',
-          tabBarIcon: ({ color, size }) => <Icon name="map-pin" size={size} color={color} />,
+          tabBarIcon: ({ color, size }) => <Icon name="search" size={size} color={color} />,
         }}
       />
       <Tab.Screen 
-        name="Appointments" 
-        component={AppointmentsScreen} 
+        name="Reservations" 
+        component={ReservationsScreen} 
         options={{
           tabBarIcon: ({ color, size }) => <Icon name="calendar" size={size} color={color} />,
         }}

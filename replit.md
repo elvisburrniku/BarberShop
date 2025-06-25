@@ -1,8 +1,8 @@
-# BarberX - Mobile Barber Booking Application
+# RestaurantX - Mobile Restaurant Discovery & Reservation Application
 
 ## Overview
 
-BarberX is a React Native mobile application built with Expo that allows users to discover, book, and manage appointments with barber shops. The application features a modern Material Design 3 inspired interface with comprehensive booking functionality, location-based discovery, and user management capabilities.
+RestaurantX is a React Native mobile application built with Expo that allows users to discover restaurants, view menus, read reviews, and make reservations. The application features a modern Material Design 3 inspired interface with comprehensive restaurant discovery, menu browsing, and reservation management capabilities.
 
 ## System Architecture
 
