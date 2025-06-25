@@ -4,6 +4,7 @@ import { Title, Text, useTheme, Card, Button, Chip, FAB } from 'react-native-pap
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useAppContext } from '../context/AppContext';
+import ApiService from '../services/ApiService';
 import MaterialButton from '../components/MaterialButton';
 
 const ReservationsScreen = ({ navigation }) => {
