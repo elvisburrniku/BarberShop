@@ -1,4 +1,4 @@
-modules = ["nodejs-20"]
+modules = ["nodejs-20", "web", "nix"]
 
 [nix]
 channel = "stable-24_05"
@@ -36,3 +36,7 @@ run = ["sh", "-c", "npx expo start --web --port 5000"]
 [[ports]]
 localPort = 5000
 externalPort = 80
+
+[[ports]]
+localPort = 5001
+externalPort = 3000
