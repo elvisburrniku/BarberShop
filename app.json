@@ -4,42 +4,34 @@
     "slug": "restaurantx",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./src/assets/images/logo.png",
+    "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./src/assets/images/logo.png",
+      "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
-    },
-    "updates": {
-      "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.restaurantx.app",
-      "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "RestaurantX needs your location to find nearby restaurants."
-      }
+      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./generated-icon.png",
-        "backgroundColor": "#2c3e50"
-      },
-      "package": "com.restaurantx.app",
-      "permissions": ["ACCESS_COARSE_LOCATION", "ACCESS_FINE_LOCATION"]
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      }
     },
     "web": {
-      "favicon": "./src/assets/images/logo.png",
+      "favicon": "./assets/favicon.png",
       "bundler": "metro"
     },
-    "extra": {
-      "eas": {
-        "projectId": "8594009a-0715-498f-a4ff-24e5f2b45355"
-      }
+    "plugins": [
+      "expo-location"
+    ],
+    "experiments": {
+      "typedRoutes": false
     }
   }
 }
