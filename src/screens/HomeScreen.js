@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, View, StyleSheet, Image, TouchableOpacity, Animated } from 'react-native';
+import { ScrollView, View, StyleSheet, TouchableOpacity, Animated } from 'react-native';
 import { Title, Text, useTheme, ActivityIndicator, Snackbar } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useAppContext } from '../context/AppContext';
 import RestaurantCard from '../components/RestaurantCard';
-import AppointmentCard from '../components/AppointmentCard';
 import MaterialCard from '../components/MaterialCard';
 import MaterialButton from '../components/MaterialButton';
 import FloatingActionButton from '../components/FloatingActionButton';
@@ -15,7 +14,6 @@ const HomeScreen = ({ navigation }) => {
   const theme = useTheme();
   const [error, setError] = useState(null);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
-  // Animation values
   const [scrollY] = useState(new Animated.Value(0));
   
   const { 
@@ -28,7 +26,7 @@ const HomeScreen = ({ navigation }) => {
     findNearbyRestaurants 
   } = useAppContext();
 
-  // Get nearby restaurants when the screen loads - only run once
+  // Get nearby restaurants when the screen loads
   useEffect(() => {
     const loadRestaurants = async () => {
       try {
@@ -41,8 +39,6 @@ const HomeScreen = ({ navigation }) => {
     };
     
     loadRestaurants();
-    // Only run this effect on initial mount
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   
   // Show error message when location error changes
@@ -53,206 +49,165 @@ const HomeScreen = ({ navigation }) => {
     }
   }, [locationError]);
 
-  // Safe access to filter appointments (handle potential null values)
-  const upcomingAppointments = appointments ? 
-    appointments
-      .filter(app => app && app.status === 'upcoming')
-      .slice(0, 2) 
-    : [];
+  // Filter and sort nearby restaurants
+  const nearbyRestaurants = restaurants
+    .filter(restaurant => restaurant.distance && restaurant.distance <= 10)
+    .sort((a, b) => a.distance - b.distance)
+    .slice(0, 5);
 
-  // Safely get top rated barber shops
-  const topRatedBarbers = barberShops ? 
-    [...barberShops]
-      .sort((a, b) => (b.rating || 0) - (a.rating || 0))
-      .slice(0, 3)
-    : [];
-  
-  const dismissSnackbar = () => setSnackbarVisible(false);
-  
-  // Header animation styles
-  const headerOpacity = scrollY.interpolate({
-    inputRange: [0, 100],
-    outputRange: [1, 0.8],
-    extrapolate: 'clamp',
-  });
-  
-  const headerElevation = scrollY.interpolate({
-    inputRange: [0, 50],
-    outputRange: [0, 3],
-    extrapolate: 'clamp',
-  });
+  // Get upcoming reservations
+  const upcomingReservations = reservations
+    .filter(res => res.status === 'confirmed')
+    .sort((a, b) => new Date(a.date) - new Date(b.date))
+    .slice(0, 3);
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={theme.colors.primary} />
-        <Text style={{ marginTop: 10 }}>Loading...</Text>
-      </View>
+      <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={theme.colors.primary} />
+          <Text style={[styles.loadingText, { color: theme.colors.onSurfaceVariant }]}>
+            Loading restaurants...
+          </Text>
+        </View>
+      </SafeAreaView>
     );
   }
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <Animated.View 
-        style={[
-          styles.header, 
-          { 
-            backgroundColor: theme.colors.surface,
-            opacity: headerOpacity,
-            elevation: headerElevation,
-            ...theme.shadows.medium,
-          }
-        ]}
-      >
-        <View>
-          <Text style={[styles.greeting, { color: theme.colors.placeholder }]}>
-            Hello, {user.firstName}
-          </Text>
-          <Title style={[styles.titleText, { color: theme.colors.text }]}>
-            Find your barber today
-          </Title>
-        </View>
-        <RippleEffect
-          onPress={() => navigation.navigate('Profile')}
-          borderless
-        >
-          <View style={styles.profileButton}>
-            <MaterialIcons name="account-circle" size={24} color={theme.colors.primary} />
-          </View>
-        </RippleEffect>
-      </Animated.View>
-
-      <ScrollView 
-        showsVerticalScrollIndicator={false}
+      <ScrollView
+        style={styles.scrollView}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
           { useNativeDriver: false }
         )}
         scrollEventThrottle={16}
       >
-        {/* Space for fixed header */}
-        <View style={{ height: 80 }} />
-
-        {/* Upcoming appointments section */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Title style={[styles.sectionTitle, { color: theme.colors.text }]}>
-              Upcoming Appointments
-            </Title>
-            <RippleEffect
-              onPress={() => navigation.navigate('Appointments')}
-              borderless
-            >
-              <Text style={{ color: theme.colors.primary }}>See All</Text>
-            </RippleEffect>
+        {/* Header */}
+        <View style={styles.header}>
+          <View>
+            <Text style={[styles.greeting, { color: theme.colors.onBackground }]}>
+              Welcome back, {user.firstName}!
+            </Text>
+            <Text style={[styles.subtitle, { color: theme.colors.onSurfaceVariant }]}>
+              Discover amazing restaurants nearby
+            </Text>
           </View>
-          
-          {upcomingAppointments.length > 0 ? (
-            upcomingAppointments.map(appointment => (
-              <AppointmentCard 
-                key={appointment.id} 
-                appointment={appointment}
-                barbers={barberShops}
-                onPress={() => navigation.navigate('Appointments')}
-              />
-            ))
-          ) : (
-            <MaterialCard 
-              elevation={1} 
-              style={styles.emptyCard}
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Profile')}
+            style={[styles.profileButton, { backgroundColor: theme.colors.primaryContainer }]}
+          >
+            <MaterialIcons name="person" size={24} color={theme.colors.onPrimaryContainer} />
+          </TouchableOpacity>
+        </View>
+
+        {/* Quick Action Cards */}
+        <View style={styles.quickActionsContainer}>
+          <MaterialCard
+            title="Reserve Table"
+            subtitle="Find restaurants"
+            icon="restaurant"
+            onPress={() => navigation.navigate('DiscoveryStack')}
+            style={[styles.quickActionCard, { backgroundColor: theme.colors.primaryContainer }]}
+            titleColor={theme.colors.onPrimaryContainer}
+            subtitleColor={theme.colors.onPrimaryContainer}
+            iconColor={theme.colors.onPrimaryContainer}
+          />
+
+          <MaterialCard
+            title="My Reservations"
+            subtitle={`${upcomingReservations.length} upcoming`}
+            icon="calendar"
+            onPress={() => navigation.navigate('Reservations')}
+            style={[styles.quickActionCard, { backgroundColor: theme.colors.secondaryContainer }]}
+            titleColor={theme.colors.onSecondaryContainer}
+            subtitleColor={theme.colors.onSecondaryContainer}
+            iconColor={theme.colors.onSecondaryContainer}
+          />
+        </View>
+
+        {/* Featured Restaurants */}
+        <View style={styles.sectionContainer}>
+          <View style={styles.sectionHeader}>
+            <Title style={[styles.sectionTitle, { color: theme.colors.onBackground }]}>
+              Featured Restaurants
+            </Title>
+            <MaterialButton
+              title="See All"
+              onPress={() => navigation.navigate('DiscoveryStack')}
+              mode="text"
+              compact
+            />
+          </View>
+
+          {featuredRestaurants.length > 0 ? (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.horizontalScrollContainer}
             >
-              <View style={styles.emptyCardContent}>
-                <Text style={{ color: theme.colors.placeholder, marginBottom: 16 }}>
-                  No upcoming appointments
-                </Text>
-                <MaterialButton 
-                  label="Book Now"
-                  mode="filled"
-                  iconName="calendar-plus"
-                  onPress={() => navigation.navigate('DiscoveryStack')}
+              {featuredRestaurants.map((restaurant) => (
+                <RestaurantCard
+                  key={restaurant.id}
+                  restaurant={restaurant}
+                  onPress={() => navigation.navigate('RestaurantDetail', { restaurantId: restaurant.id })}
+                  style={styles.horizontalCard}
                 />
-              </View>
-            </MaterialCard>
+              ))}
+            </ScrollView>
+          ) : (
+            <MaterialCard
+              title="No restaurants found"
+              subtitle="Try expanding your search area"
+              icon="restaurant"
+              style={[styles.emptyCard, { backgroundColor: theme.colors.surfaceVariant }]}
+              titleColor={theme.colors.onSurfaceVariant}
+              subtitleColor={theme.colors.onSurfaceVariant}
+              iconColor={theme.colors.onSurfaceVariant}
+            />
           )}
         </View>
 
-        {/* Top rated barbers section */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Title style={[styles.sectionTitle, { color: theme.colors.text }]}>
-              Top Rated Barbers
-            </Title>
-            <RippleEffect
-              onPress={() => navigation.navigate('DiscoveryStack')}
-              borderless
-            >
-              <Text style={{ color: theme.colors.primary }}>View All</Text>
-            </RippleEffect>
-          </View>
-          
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {topRatedBarbers.map(barber => (
-              <BarberCard 
-                key={barber.id} 
-                barber={barber} 
-                onPress={() => {
-                  navigation.navigate('DiscoveryStack', {
-                    screen: 'BarberDetail',
-                    params: { barberId: barber.id }
-                  });
-                }}
-                style={styles.horizontalBarberCard}
-              />
-            ))}
-          </ScrollView>
-        </View>
-
-        {/* CTA Section */}
-        <View style={styles.ctaSection}>
-          <MaterialCard 
-            elevation={3}
-            style={styles.ctaCard}
-          >
-            <View style={styles.ctaContent}>
-              <Title style={styles.ctaTitle}>Need a fresh cut?</Title>
-              <Text style={styles.ctaText}>
-                Discover barbers nearby and book your appointment today!
-              </Text>
-              <MaterialButton 
-                label="Find Barbers Near Me"
-                mode="filled"
-                iconName="place"
-                onPress={() => navigation.navigate('DiscoveryStack')}
-                color={theme.colors.secondary}
+        {/* Upcoming Reservations */}
+        {upcomingReservations.length > 0 && (
+          <View style={styles.sectionContainer}>
+            <View style={styles.sectionHeader}>
+              <Title style={[styles.sectionTitle, { color: theme.colors.onBackground }]}>
+                Upcoming Reservations
+              </Title>
+              <MaterialButton
+                title="View All"
+                onPress={() => navigation.navigate('Reservations')}
+                mode="text"
+                compact
               />
             </View>
-          </MaterialCard>
-        </View>
-        
-        {/* Extra space at bottom for FAB */}
-        <View style={{ height: 80 }} />
+
+            <View style={styles.reservationsContainer}>
+              {upcomingReservations.map((reservation) => {
+                const restaurant = restaurants.find(r => r.id === reservation.restaurantId);
+                return (
+                  <MaterialCard
+                    key={reservation.id}
+                    title={restaurant?.name || 'Restaurant'}
+                    subtitle={new Date(reservation.date).toLocaleDateString()}
+                    icon="event"
+                    onPress={() => navigation.navigate('RestaurantDetail', { restaurantId: reservation.restaurantId })}
+                    style={styles.reservationCard}
+                  />
+                );
+              })}
+            </View>
+          </View>
+        )}
       </ScrollView>
-      
-      {/* Floating Action Button */}
-      <View style={styles.fabContainer}>
-        <FloatingActionButton
-          iconName="add"
-          onPress={() => navigation.navigate('DiscoveryStack')}
-          extended={true}
-          label="Book Now"
-        />
-      </View>
-      
-      {/* Error message Snackbar */}
+
+      {/* Snackbar for errors */}
       <Snackbar
         visible={snackbarVisible}
-        onDismiss={dismissSnackbar}
+        onDismiss={() => setSnackbarVisible(false)}
         duration={4000}
-        action={{
-          label: 'OK',
-          onPress: dismissSnackbar,
-        }}
-        style={{ backgroundColor: theme.colors.error }}
       >
         {error}
       </Snackbar>
@@ -263,99 +218,81 @@ const HomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    position: 'relative',
+  },
+  scrollView: {
+    flex: 1,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  // Animated fixed header
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
+  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 20,
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 10,
-    height: 80,
+    padding: 16,
+    paddingTop: 8,
   },
   greeting: {
-    fontSize: 16,
-  },
-  titleText: {
     fontSize: 24,
     fontWeight: 'bold',
+  },
+  subtitle: {
+    fontSize: 16,
     marginTop: 4,
   },
   profileButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  // Content sections
-  section: {
-    padding: 16,
-    marginBottom: 8,
+  quickActionsContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 16,
+    marginBottom: 24,
+    gap: 12,
+  },
+  quickActionCard: {
+    flex: 1,
+  },
+  sectionContainer: {
+    marginBottom: 24,
   },
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    paddingHorizontal: 16,
     marginBottom: 16,
   },
   sectionTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
-  horizontalBarberCard: {
-    width: 250,
-    marginRight: 15,
+  horizontalScrollContainer: {
+    paddingLeft: 16,
+    paddingRight: 8,
   },
-  // Empty state card
+  horizontalCard: {
+    width: 280,
+    marginRight: 8,
+  },
   emptyCard: {
-    padding: 16,
-    marginBottom: 15,
+    marginHorizontal: 16,
   },
-  emptyCardContent: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 16,
+  reservationsContainer: {
+    paddingHorizontal: 16,
+    gap: 12,
   },
-  // Call to action section
-  ctaSection: {
-    padding: 16,
-    marginBottom: 20,
-  },
-  ctaCard: {
-    padding: 0,
-  },
-  ctaContent: {
-    padding: 24,
-  },
-  ctaTitle: {
-    fontSize: 22,
-    fontWeight: 'bold',
+  reservationCard: {
     marginBottom: 8,
-    color: '#fff',
-  },
-  ctaText: {
-    color: '#fff',
-    marginBottom: 20,
-    fontSize: 16,
-    opacity: 0.9,
-  },
-  // Floating action button
-  fabContainer: {
-    position: 'absolute',
-    bottom: 16,
-    right: 16,
-    zIndex: 999,
   },
 });
 

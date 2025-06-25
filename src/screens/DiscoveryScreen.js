@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, FlatList, Alert } from 'react-native';
+import { View, StyleSheet, FlatList, ScrollView } from 'react-native';
 import { 
   Searchbar, 
   Title, 
@@ -8,217 +8,257 @@ import {
   useTheme, 
   ActivityIndicator 
 } from 'react-native-paper';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppContext } from '../context/AppContext';
 import RestaurantCard from '../components/RestaurantCard';
-import LocationSearch from '../components/LocationSearch';
-import { getBarbersByLocation } from '../utils/LocationService';
 
 const DiscoveryScreen = ({ navigation }) => {
   const theme = useTheme();
-  const { barberShops, userLocation, locationError, loading } = useAppContext();
+  const { 
+    restaurants, 
+    cuisineCategories,
+    userLocation, 
+    loading, 
+    locationError,
+    findNearbyRestaurants,
+    searchRestaurants
+  } = useAppContext();
   
   const [searchQuery, setSearchQuery] = useState('');
-  const [filteredBarbers, setFilteredBarbers] = useState(barberShops);
-  const [selectedFilter, setSelectedFilter] = useState('nearest');
-  const [locationSearchVisible, setLocationSearchVisible] = useState(false);
-  const [currentLocation, setCurrentLocation] = useState('Current Location');
+  const [selectedCuisines, setSelectedCuisines] = useState([]);
+  const [sortBy, setSortBy] = useState('distance');
+  const [priceFilter, setPriceFilter] = useState([]);
 
   useEffect(() => {
-    if (locationError) {
-      Alert.alert(
-        "Location Error",
-        "We couldn't access your location. Some features may be limited.",
-        [{ text: "OK" }]
-      );
-    }
-  }, [locationError]);
+    findNearbyRestaurants();
+  }, []);
 
-  useEffect(() => {
-    filterBarberShops();
-  }, [selectedFilter, barberShops, searchQuery]);
+  const getFilteredRestaurants = () => {
+    let filtered = [...restaurants];
 
-  const filterBarberShops = () => {
-    let filtered = [...barberShops];
-    
     // Apply search filter
-    if (searchQuery) {
-      filtered = filtered.filter(barber => 
-        barber.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        barber.location.address.toLowerCase().includes(searchQuery.toLowerCase())
+    if (searchQuery.trim()) {
+      filtered = searchRestaurants(searchQuery);
+    }
+
+    // Apply cuisine filter
+    if (selectedCuisines.length > 0) {
+      filtered = filtered.filter(restaurant => 
+        selectedCuisines.includes(restaurant.cuisine.toLowerCase())
       );
     }
-    
-    // Apply sort filter
-    switch (selectedFilter) {
-      case 'nearest':
-        filtered = filtered.sort((a, b) => a.distance - b.distance);
-        break;
+
+    // Apply price filter
+    if (priceFilter.length > 0) {
+      filtered = filtered.filter(restaurant => 
+        priceFilter.includes(restaurant.priceLevel)
+      );
+    }
+
+    // Sort results
+    switch (sortBy) {
       case 'rating':
-        filtered = filtered.sort((a, b) => b.rating - a.rating);
+        filtered.sort((a, b) => b.rating - a.rating);
         break;
       case 'price':
-        filtered = filtered.sort((a, b) => a.priceLevel - b.priceLevel);
+        filtered.sort((a, b) => a.priceLevel - b.priceLevel);
         break;
-      case 'favorites':
-        filtered = filtered.filter(barber => barber.isFavorite);
-        break;
+      case 'distance':
       default:
+        filtered.sort((a, b) => (a.distance || 999) - (b.distance || 999));
         break;
     }
-    
-    setFilteredBarbers(filtered);
+
+    return filtered;
   };
 
-  const handleLocationSelect = (location) => {
-    setCurrentLocation(location.description || 'Selected Location');
-    setLocationSearchVisible(false);
-    // In a real app, we would call an API to get barbers near this location
+  const filteredRestaurants = getFilteredRestaurants();
+
+  const toggleCuisineFilter = (cuisine) => {
+    setSelectedCuisines(prev => {
+      if (prev.includes(cuisine)) {
+        return prev.filter(c => c !== cuisine);
+      } else {
+        return [...prev, cuisine];
+      }
+    });
   };
 
-  const renderFilters = () => {
-    const filters = [
-      { id: 'nearest', label: 'Nearest' },
-      { id: 'rating', label: 'Top Rated' },
-      { id: 'price', label: 'Price ↓' },
-      { id: 'favorites', label: 'Favorites' },
-    ];
-
-    return (
-      <View style={styles.filtersContainer}>
-        {filters.map(filter => (
-          <Chip
-            key={filter.id}
-            selected={selectedFilter === filter.id}
-            onPress={() => setSelectedFilter(filter.id)}
-            style={[
-              styles.filterChip,
-              selectedFilter === filter.id && { backgroundColor: theme.colors.primary }
-            ]}
-            textStyle={selectedFilter === filter.id ? { color: '#fff' } : {}}
-          >
-            {filter.label}
-          </Chip>
-        ))}
-      </View>
-    );
+  const togglePriceFilter = (price) => {
+    setPriceFilter(prev => {
+      if (prev.includes(price)) {
+        return prev.filter(p => p !== price);
+      } else {
+        return [...prev, price];
+      }
+    });
   };
 
-  if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={theme.colors.primary} />
-        <Text style={{ marginTop: 10 }}>Finding barbers near you...</Text>
-      </View>
-    );
-  }
+  const renderRestaurantItem = ({ item }) => (
+    <RestaurantCard
+      restaurant={item}
+      onPress={() => navigation.navigate('RestaurantDetail', { restaurantId: item.id })}
+      style={styles.restaurantCard}
+    />
+  );
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
+      {/* Search Bar */}
+      <View style={styles.searchContainer}>
         <Searchbar
-          placeholder="Search barbers or services"
+          placeholder="Search restaurants, cuisine..."
           onChangeText={setSearchQuery}
           value={searchQuery}
-          style={styles.searchBar}
+          style={[styles.searchBar, { backgroundColor: theme.colors.surface }]}
         />
-        
-        <Chip 
-          icon="map-marker" 
-          onPress={() => setLocationSearchVisible(true)}
-          style={styles.locationChip}
-        >
-          {currentLocation}
-        </Chip>
-        
-        {locationSearchVisible && (
-          <LocationSearch
-            visible={locationSearchVisible} 
-            onDismiss={() => setLocationSearchVisible(false)}
-            onSelectLocation={handleLocationSelect}
-          />
-        )}
       </View>
 
-      {renderFilters()}
+      {/* Filters */}
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersContainer}>
+        <View style={styles.filtersRow}>
+          {/* Sort Chips */}
+          <Chip
+            selected={sortBy === 'distance'}
+            onPress={() => setSortBy('distance')}
+            style={[styles.filterChip, sortBy === 'distance' && { backgroundColor: theme.colors.primary }]}
+            textStyle={{ color: sortBy === 'distance' ? theme.colors.onPrimary : theme.colors.onSurface }}
+          >
+            Distance
+          </Chip>
+          <Chip
+            selected={sortBy === 'rating'}
+            onPress={() => setSortBy('rating')}
+            style={[styles.filterChip, sortBy === 'rating' && { backgroundColor: theme.colors.primary }]}
+            textStyle={{ color: sortBy === 'rating' ? theme.colors.onPrimary : theme.colors.onSurface }}
+          >
+            Rating
+          </Chip>
+          <Chip
+            selected={sortBy === 'price'}
+            onPress={() => setSortBy('price')}
+            style={[styles.filterChip, sortBy === 'price' && { backgroundColor: theme.colors.primary }]}
+            textStyle={{ color: sortBy === 'price' ? theme.colors.onPrimary : theme.colors.onSurface }}
+          >
+            Price
+          </Chip>
 
+          {/* Cuisine Filters */}
+          {cuisineCategories.map((cuisine) => (
+            <Chip
+              key={cuisine.id}
+              selected={selectedCuisines.includes(cuisine.id)}
+              onPress={() => toggleCuisineFilter(cuisine.id)}
+              style={[
+                styles.filterChip,
+                selectedCuisines.includes(cuisine.id) && { backgroundColor: theme.colors.secondary }
+              ]}
+              textStyle={{
+                color: selectedCuisines.includes(cuisine.id) 
+                  ? theme.colors.onSecondary 
+                  : theme.colors.onSurface
+              }}
+            >
+              {cuisine.icon} {cuisine.name}
+            </Chip>
+          ))}
+
+          {/* Price Filters */}
+          {[1, 2, 3, 4].map((price) => (
+            <Chip
+              key={price}
+              selected={priceFilter.includes(price)}
+              onPress={() => togglePriceFilter(price)}
+              style={[
+                styles.filterChip,
+                priceFilter.includes(price) && { backgroundColor: theme.colors.tertiary }
+              ]}
+              textStyle={{
+                color: priceFilter.includes(price) 
+                  ? theme.colors.onTertiary 
+                  : theme.colors.onSurface
+              }}
+            >
+              {'$'.repeat(price)}
+            </Chip>
+          ))}
+        </View>
+      </ScrollView>
+
+      {/* Results */}
       <View style={styles.resultsContainer}>
-        <Title style={styles.resultsTitle}>
-          {filteredBarbers.length} {filteredBarbers.length === 1 ? 'Barber' : 'Barbers'} Found
-        </Title>
-        
-        {filteredBarbers.length > 0 ? (
-          <FlatList
-            data={filteredBarbers}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <BarberCard 
-                barber={item}
-                onPress={() => navigation.navigate('BarberDetail', { barberId: item.id })}
-                style={styles.barberCard}
-              />
-            )}
-            showsVerticalScrollIndicator={false}
-          />
-        ) : (
-          <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>No barbers found matching your criteria</Text>
+        <Text style={[styles.resultsText, { color: theme.colors.onSurfaceVariant }]}>
+          {filteredRestaurants.length} restaurants found
+        </Text>
+
+        {loading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color={theme.colors.primary} />
+            <Text style={[styles.loadingText, { color: theme.colors.onSurfaceVariant }]}>
+              Finding restaurants...
+            </Text>
           </View>
+        ) : (
+          <FlatList
+            data={filteredRestaurants}
+            renderItem={renderRestaurantItem}
+            keyExtractor={(item) => item.id}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.listContainer}
+          />
         )}
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+  },
+  searchContainer: {
+    padding: 16,
+    paddingBottom: 8,
+  },
+  searchBar: {
+    elevation: 0,
+    shadowOpacity: 0,
+  },
+  filtersContainer: {
+    maxHeight: 50,
+    marginBottom: 16,
+  },
+  filtersRow: {
+    flexDirection: 'row',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  filterChip: {
+    marginRight: 8,
+    height: 32,
+  },
+  resultsContainer: {
+    flex: 1,
+    paddingHorizontal: 16,
+  },
+  resultsText: {
+    fontSize: 14,
+    marginBottom: 16,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  header: {
-    padding: 16,
-    backgroundColor: '#fff',
-  },
-  searchBar: {
-    marginBottom: 10,
-    elevation: 2,
-  },
-  locationChip: {
-    alignSelf: 'flex-start',
-  },
-  filtersContainer: {
-    flexDirection: 'row',
-    padding: 16,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  filterChip: {
-    marginRight: 8,
-  },
-  resultsContainer: {
-    flex: 1,
-    padding: 16,
-  },
-  resultsTitle: {
-    marginBottom: 16,
-    fontSize: 18,
-  },
-  barberCard: {
-    marginBottom: 16,
-  },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  emptyText: {
+  loadingText: {
+    marginTop: 16,
     fontSize: 16,
-    color: '#888',
+  },
+  listContainer: {
+    paddingBottom: 16,
+  },
+  restaurantCard: {
+    marginBottom: 16,
   },
 });
 

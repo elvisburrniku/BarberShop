@@ -3,26 +3,24 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { NavigationContainer } from '@react-navigation/native';
-import { View, Text, ActivityIndicator, StyleSheet, Animated } from 'react-native';
+import { View, Text, ActivityIndicator, StyleSheet, Animated, Platform } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { AppProvider } from './src/context/AppContext';
 import AppNavigator from './src/navigation/AppNavigator';
 import ErrorBoundary from './src/components/ErrorBoundary';
 import theme from './src/theme/theme';
-// Import URL polyfill to fix "URL.protocol is not implemented" error
-import './src/utils/URLPolyfill';
 
 export default function App() {
-  const [isReady, setIsReady] = useState(false);
+  const [isReady, setIsReady] = useState(Platform.OS === 'web' ? true : false);
 
-  // Add a small delay to ensure all native modules are initialized 
-  // This helps prevent crashes on app startup
+  // Add a small delay for native platforms only
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsReady(true);
-    }, 500);
-
-    return () => clearTimeout(timer);
+    if (Platform.OS !== 'web') {
+      const timer = setTimeout(() => {
+        setIsReady(true);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
   }, []);
 
   // Loading animation 

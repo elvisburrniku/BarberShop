@@ -1,191 +1,105 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Card, Title, Text, Button, Avatar, useTheme } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/Feather';
-import { formatAppointmentDate, formatCurrency } from '../utils/DateTimeUtils';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { Card, Text, useTheme, Chip } from 'react-native-paper';
+import { MaterialIcons } from '@expo/vector-icons';
 
-const AppointmentCard = ({ appointment, barbers, onPress, showActions, onCancel, onReschedule }) => {
+const AppointmentCard = ({ appointment, onPress, style }) => {
   const theme = useTheme();
 
-  // Find the barber for this appointment
-  const barber = barbers.find(b => b.id === appointment.barberId);
-  
-  // Get status color
-  const getStatusColor = () => {
-    switch (appointment.status) {
-      case 'upcoming':
-        return theme.colors.primary;
-      case 'completed':
-        return theme.colors.success;
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
+
+  const formatTime = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
+  };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'confirmed':
+        return '#2ecc71';
+      case 'pending':
+        return '#f39c12';
       case 'cancelled':
-        return theme.colors.error;
+        return '#e74c3c';
       default:
-        return theme.colors.text;
+        return theme.colors.onSurface;
     }
   };
-  
-  if (!barber) return null;
 
   return (
-    <Card 
-      style={styles.card} 
-      elevation={2}
-      onPress={onPress}
-    >
-      <Card.Content>
-        <View style={styles.header}>
-          <View style={styles.barberInfo}>
-            <Avatar.Image 
-              source={{ uri: barber.coverImage }} 
-              size={50}
-              style={styles.barberAvatar} 
-            />
-            <View>
-              <Title style={styles.barberName}>{barber.name}</Title>
-              <Text style={styles.address} numberOfLines={1}>
-                {barber.location.address}
+    <TouchableOpacity onPress={onPress} style={[styles.container, style]}>
+      <Card style={[styles.card, { backgroundColor: theme.colors.surface }]}>
+        <View style={styles.cardContent}>
+          <View style={styles.header}>
+            <View style={styles.iconContainer}>
+              <MaterialIcons name="event" size={24} color={theme.colors.primary} />
+            </View>
+            <View style={styles.appointmentInfo}>
+              <Text style={[styles.title, { color: theme.colors.onSurface }]}>
+                Reservation
+              </Text>
+              <Text style={[styles.subtitle, { color: theme.colors.onSurfaceVariant }]}>
+                {formatDate(appointment.date)} at {formatTime(appointment.date)}
               </Text>
             </View>
-          </View>
-          <View style={[styles.statusChip, { backgroundColor: getStatusColor() }]}>
-            <Text style={styles.statusText}>
-              {appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)}
-            </Text>
+            <Chip
+              style={[styles.statusChip, { backgroundColor: getStatusColor(appointment.status) + '20' }]}
+              textStyle={{ color: getStatusColor(appointment.status), fontWeight: '600' }}
+            >
+              {appointment.status}
+            </Chip>
           </View>
         </View>
-
-        <View style={styles.appointmentDetails}>
-          <View style={styles.detailItem}>
-            <Icon name="calendar" size={16} color="#666" />
-            <Text style={styles.detailText}>
-              {formatAppointmentDate(new Date(appointment.date))}
-            </Text>
-          </View>
-          <View style={styles.detailItem}>
-            <Icon name="clock" size={16} color="#666" />
-            <Text style={styles.detailText}>
-              {new Date(appointment.date).toLocaleTimeString('en-US', { 
-                hour: '2-digit', 
-                minute: '2-digit' 
-              })}
-            </Text>
-          </View>
-        </View>
-
-        {appointment.services && appointment.services.length > 0 && (
-          <View style={styles.servicesContainer}>
-            <Text style={styles.servicesLabel}>Services:</Text>
-            {appointment.services.map((serviceId, index) => {
-              const service = barber.services?.find(s => s.id === serviceId);
-              if (!service) return null;
-
-              return (
-                <View key={serviceId} style={styles.serviceItem}>
-                  <Text>{service.name}</Text>
-                  <Text>{formatCurrency(service.price)}</Text>
-                </View>
-              );
-            })}
-          </View>
-        )}
-
-        {showActions && (
-          <View style={styles.actions}>
-            <Button 
-              mode="outlined" 
-              onPress={onCancel}
-              style={[styles.actionButton, styles.cancelButton]}
-            >
-              Cancel
-            </Button>
-            <Button 
-              mode="contained" 
-              onPress={onReschedule}
-              style={styles.actionButton}
-            >
-              Reschedule
-            </Button>
-          </View>
-        )}
-      </Card.Content>
-    </Card>
+      </Card>
+    </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    marginBottom: 8,
+  },
   card: {
-    marginBottom: 16,
-    borderRadius: 8,
+    elevation: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  cardContent: {
+    padding: 16,
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 12,
-  },
-  barberInfo: {
-    flexDirection: 'row',
     alignItems: 'center',
-    flex: 1,
   },
-  barberAvatar: {
+  iconContainer: {
     marginRight: 12,
   },
-  barberName: {
-    fontSize: 16,
-    fontWeight: 'bold',
+  appointmentInfo: {
+    flex: 1,
   },
-  address: {
-    fontSize: 12,
-    color: '#666',
+  title: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  subtitle: {
+    fontSize: 14,
+    marginTop: 2,
   },
   statusChip: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  statusText: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: 'bold',
-  },
-  appointmentDetails: {
-    flexDirection: 'row',
-    marginBottom: 12,
-  },
-  detailItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 16,
-  },
-  detailText: {
-    marginLeft: 4,
-    fontSize: 14,
-  },
-  servicesContainer: {
-    marginBottom: 12,
-  },
-  servicesLabel: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  serviceItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 2,
-  },
-  actions: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 8,
-  },
-  actionButton: {
-    flex: 1,
-    marginHorizontal: 4,
-  },
-  cancelButton: {
-    borderColor: 'red',
+    height: 28,
   },
 });
 
