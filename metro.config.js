@@ -2,13 +2,18 @@ const { getDefaultConfig } = require('expo/metro-config');
 
 const config = getDefaultConfig(__dirname);
 
-// Add support for React Native Web
-config.resolver.platforms = ['web', 'native', 'ios', 'android'];
+// Web-only configuration to avoid React Native runtime issues
+config.resolver.platforms = ['web'];
 
-// Enable symlinks (for monorepos)
-config.resolver.unstable_enableSymlinks = true;
+// Disable native modules that cause C++ runtime errors
+config.resolver.resolverMainFields = ['browser', 'main'];
 
-// Add additional asset extensions
-config.resolver.assetExts.push('bin');
+// Ensure web-only bundling
+config.transformer.getTransformOptions = async () => ({
+  transform: {
+    experimentalImportSupport: false,
+    inlineRequires: true,
+  },
+});
 
 module.exports = config;
